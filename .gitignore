@@ -1,4 +1,3 @@
 *.wasm 
 *.abi
-*.sh
 *.log

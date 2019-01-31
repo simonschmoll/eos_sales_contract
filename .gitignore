@@ -1,3 +1,5 @@
 *.wasm 
 *.abi
 *.log
+
+.vscode

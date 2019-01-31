@@ -22,6 +22,12 @@ namespace eosio {
       [[eosio::action]]
       void transfer(name from, name to, asset quantity, string memo);
 
+      [[eosio::action]]
+      void withdraw(name to);
+
+      [[eosio::action]]
+      void retract(name retractor);
+
       struct [[eosio::table]] agreestruct {
         uint64_t key;
         bool sellerRetract;
@@ -32,13 +38,16 @@ namespace eosio {
 
       struct [[eosio::table]] configstruct {
         uint64_t key;
+        asset balance;
+        bool contractIsClosed;
+        bool itemIsSet;
         bool buyerIsPaidBack;
-        bool contractRetracted = false;
+        bool contractRetracted;
+        bool itemReceived;
+        bool itemPaid;
         name seller;
         name buyer;
         name intermediator;
-        bool contractIsClosed = false;
-        bool itemIsSet = false;
         uint64_t primary_key() const { return key; }
       };
 
@@ -46,8 +55,6 @@ namespace eosio {
         uint64_t key;
         std::string itemName;
         asset itemPrice;
-        bool itemReceived;
-        bool itemPaid;
         uint64_t primary_key() const { return key; }
       };
 
@@ -60,12 +67,29 @@ namespace eosio {
       agreementstr _agree;
       itemstr _item;
 
-      void itempaid();
+      configstruct getConfig();
+      void setItemIsSetFlag(bool value, name payer);
+      void setItemIsPaidFlag(bool value, name payer);
+      void setItemReceivedFlag(bool value, name payer);
+      void setContractClosedStatus(bool value, name payer);
+      void setRetractStatus(bool value, name payer);
+      void setBuyerPaidBack(bool value, name payer);
+      void setBalance(asset value, name payer);
+      void configureRetractedState(name retractor);
+      void sellerRetract(name seller);
+      void buyerRetract(name buyer);
+      void intermediatorRetract(name intermediator);
+      void sendTokens(name to, asset price);
+      void itempaid(name buyer);
       void assertInitialized();
       void assertItemReceived();
       void assertItemPaid();
       void assertPriceEqualsValue(uint64_t value);
+      void assertRetractStatus(bool status);
+      void assertContractClosedStatus(bool status);
       name getSeller();
       name getBuyer();
+      name getIntermediator();
+      asset getPrice();
     };
 }

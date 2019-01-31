@@ -8,3 +8,4 @@ sh contractSetup.sh
 wait $!
 # remove later
 sh performActions.sh
+sh transfer.sh

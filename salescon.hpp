@@ -8,7 +8,7 @@ namespace eosio {
     
     public:
       salescon(name receiver, name code,  datastream<const char*> ds): contract(receiver, code, ds), _item(_code, _code.value),
-      _config(_code, _code.value), _agree(_code, _code.value) {}
+      _config(_code, _code.value), _agreement(_code, _code.value) {}
 
       [[eosio::action]]
       void init(name seller, name buyer, name intermediator);
@@ -38,13 +38,13 @@ namespace eosio {
 
       struct [[eosio::table]] configstruct {
         uint64_t key;
-        asset balance;
-        bool contractIsClosed;
-        bool itemIsSet;
-        bool buyerIsPaidBack;
-        bool contractRetracted;
-        bool itemReceived;
+        bool itemSet;
         bool itemPaid;
+        bool itemReceived;
+        bool contractIsClosed;
+        bool contractRetracted;
+        bool buyerIsPaidBack;
+        asset balance;
         name seller;
         name buyer;
         name intermediator;
@@ -64,10 +64,11 @@ namespace eosio {
       typedef eosio::multi_index<"item"_n, itemstruct> itemstr;
 
       configstr _config;
-      agreementstr _agree;
+      agreementstr _agreement;
       itemstr _item;
 
       configstruct getConfig();
+      agreestruct getAgreement();
       void setItemIsSetFlag(bool value, name payer);
       void setItemIsPaidFlag(bool value, name payer);
       void setItemReceivedFlag(bool value, name payer);
@@ -80,8 +81,9 @@ namespace eosio {
       void buyerRetract(name buyer);
       void intermediatorRetract(name intermediator);
       void sendTokens(name to, asset price);
-      void itempaid(name buyer);
+      void itempaid(name payer);
       void assertInitialized();
+      void assertItemSet();
       void assertItemReceived();
       void assertItemPaid();
       void assertPriceEqualsValue(uint64_t value);

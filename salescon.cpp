@@ -16,15 +16,15 @@ void salescon::init(name seller, name buyer, name intermediator)
     row.intermediator = intermediator;
     row.balance = asset(0, EOS_SYMBOL);
     row.contractIsClosed = false;
-    row.itemIsSet = false;
+    row.itemSet = false;
     row.buyerIsPaidBack = false;
     row.contractRetracted = false;
     row.itemReceived = false;
     row.itemPaid = false;
   });
-  auto agreeIt = _agree.find(0);
-  eosio_assert(agreeIt == _agree.end(), "Contract already initialized");
-  _agree.emplace(seller, [&](auto &row) {
+  auto agreeIt = _agreement.find(0);
+  eosio_assert(agreeIt == _agreement.end(), "Contract already initialized");
+  _agreement.emplace(seller, [&](auto &row) {
     row.key = 0;
     row.sellerRetract = false;
     row.buyerRetract = false;
@@ -51,9 +51,9 @@ void salescon::setitem(std::string itemName, uint64_t itemPrice)
 
 void salescon::itemreceived()
 {
+  assertItemPaid();
   name buyer = getBuyer();
   require_auth(buyer);
-  assertInitialized();
   setItemReceivedFlag(true, buyer);
 }
 
@@ -66,7 +66,7 @@ void salescon::transfer(name from, name to, asset quantity, string memo)
   name buyer = getBuyer();
 
   // Necessary asserts
-  assertItemReceived();
+  // assertItemSet();
   assertPriceEqualsValue(quantity.amount);
   eosio_assert(from == buyer, "Amount must come from buyer");
   eosio_assert(to == _self, "Contract was not the recipient");
@@ -75,13 +75,22 @@ void salescon::transfer(name from, name to, asset quantity, string memo)
   eosio_assert(quantity.symbol == EOS_SYMBOL, "only transfer from EOS tokens possible");
 
   // If everything is valid set item to paid
-  itempaid(buyer);
+  itempaid(_self);
 }
 
 void salescon::withdraw(name to)
 {
+  assertItemReceived();
   assertItemPaid();
-  require_auth(getSeller());
+  auto config = getConfig();
+  if (config.buyerIsPaidBack)
+  {
+    require_auth(getBuyer());
+  }
+  else
+  {
+    require_auth(getSeller());
+  }
   require_auth(to);
   auto price = getPrice();
   sendTokens(to, price);
@@ -89,14 +98,22 @@ void salescon::withdraw(name to)
 
 void salescon::retract(name retractor)
 {
-  require_auth(retractor);
   name seller = getSeller();
   name buyer = getBuyer();
   name intermediator = getIntermediator();
+  assertContractClosedStatus(false);
+  assertRetractStatus(false);
+
+  auto agreement = getAgreement();
+  if (retractor == buyer)
+  {
+    eosio_assert(!agreement.sellerRetract, "can not retract, because seller already retracted");
+  }
+  else if (retractor == seller){
+      eosio_assert(!agreement.buyerRetract, "can not retract, because buyer already retracted");
+  } 
+  require_auth(retractor);
   eosio_assert(retractor == buyer || retractor == seller || retractor == intermediator, "Caller does not have the permission to call this method");
-  auto iterator = _agree.find(0);
-  // print(typeid(iterator).name());
-  eosio_assert(iterator != _agree.end(), "Contract must be initialized");
   if (retractor == buyer)
   {
     buyerRetract(buyer);
@@ -112,65 +129,85 @@ void salescon::retract(name retractor)
   configureRetractedState(retractor);
 }
 
+void salescon::itempaid(name payer)
+{
+  setItemIsPaidFlag(true, payer);
+  asset price = getPrice();
+  setBalance(price, payer);
+  print("Item is paid");
+}
 
-
-void salescon::setItemIsSetFlag(bool value, name payer) {
+void salescon::setItemIsSetFlag(bool value, name payer)
+{
   auto iterator = _config.find(0);
-  if(iterator != _config.end()) {
+  if (iterator != _config.end())
+  {
     _config.modify(iterator, payer, [&](auto &row) {
-      row.itemIsSet = value;
+      row.itemSet = value;
     });
   }
 }
 
-void salescon::setItemIsPaidFlag(bool value, name payer) {
+void salescon::setItemIsPaidFlag(bool value, name payer)
+{
   auto iterator = _config.find(0);
-  if(iterator != _config.end()) {
+  if (iterator != _config.end())
+  {
+    _config.modify(iterator, payer, [&](auto &row) {
+      row.itemPaid = value;
+    });
+  }
+}
+
+void salescon::setItemReceivedFlag(bool value, name payer)
+{
+  auto iterator = _config.find(0);
+  if (iterator != _config.end())
+  {
     _config.modify(iterator, payer, [&](auto &row) {
       row.itemReceived = value;
     });
   }
 }
 
-void salescon::setItemReceivedFlag(bool value, name payer) {
+void salescon::setContractClosedStatus(bool value, name payer)
+{
   auto iterator = _config.find(0);
-  if(iterator != _config.end()) {
-    _config.modify(iterator, payer, [&](auto &row) {
-      row.itemReceived = value;
-    });
-  }
-}
-
-void salescon::setContractClosedStatus(bool value, name payer) {
-  auto iterator = _config.find(0);
-  if(iterator != _config.end()) {
+  if (iterator != _config.end())
+  {
     _config.modify(iterator, payer, [&](auto &row) {
       row.contractIsClosed = value;
     });
   }
 }
 
-void salescon::setRetractStatus(bool value, name payer) {
+void salescon::setRetractStatus(bool value, name payer)
+{
   auto iterator = _config.find(0);
-  if(iterator != _config.end()) {
+  if (iterator != _config.end())
+  {
     _config.modify(iterator, payer, [&](auto &row) {
       row.contractRetracted = value;
     });
   }
 }
 
-void salescon::setBuyerPaidBack(bool value, name payer) {
+void salescon::setBuyerPaidBack(bool value, name payer)
+{
   auto iterator = _config.find(0);
-  if(iterator != _config.end()) {
+  if (iterator != _config.end())
+  {
     _config.modify(iterator, payer, [&](auto &row) {
       row.buyerIsPaidBack = value;
     });
   }
 }
 
-void salescon::setBalance(asset value, name payer) {
+void salescon::setBalance(asset value, name payer)
+{
   auto iterator = _config.find(0);
-  if(iterator != _config.end()) {
+  if (iterator != _config.end())
+  {
     _config.modify(iterator, payer, [&](auto &row) {
       row.balance = value;
     });
@@ -179,7 +216,7 @@ void salescon::setBalance(asset value, name payer) {
 
 void salescon::configureRetractedState(name retractor)
 {
-  auto iterator = _agree.find(0);
+  auto iterator = _agreement.find(0);
   const auto &str = *iterator;
   if ((str.sellerRetract && str.buyerRetract) ||
       (str.sellerRetract && str.intermediatorRetract) ||
@@ -200,36 +237,26 @@ void salescon::configureRetractedState(name retractor)
 
 void salescon::buyerRetract(name buyer)
 {
-  auto iterator = _agree.find(0);
-  _agree.modify(iterator, buyer, [&](auto &row) {
+  auto iterator = _agreement.find(0);
+  _agreement.modify(iterator, buyer, [&](auto &row) {
     row.buyerRetract = true;
   });
 }
 
 void salescon::sellerRetract(name seller)
 {
-  auto iterator = _agree.find(0);
-  _agree.modify(iterator, seller, [&](auto &row) {
+  auto iterator = _agreement.find(0);
+  _agreement.modify(iterator, seller, [&](auto &row) {
     row.sellerRetract = true;
   });
 }
 
 void salescon::intermediatorRetract(name intermediator)
 {
-  auto iterator = _agree.find(0);
-  _agree.modify(iterator, intermediator, [&](auto &row) {
+  auto iterator = _agreement.find(0);
+  _agreement.modify(iterator, intermediator, [&](auto &row) {
     row.intermediatorRetract = true;
   });
-}
-
-void salescon::itempaid(name buyer)
-{
-  assertInitialized();
-  assertItemReceived();
-  setItemIsPaidFlag(true, buyer);
-  asset price = getPrice();
-  setBalance(price, buyer);
-  print("Item is paid");
 }
 
 void salescon::sendTokens(name to, asset price)
@@ -240,43 +267,49 @@ void salescon::sendTokens(name to, asset price)
       "transfer"_n,
       std::make_tuple(get_self(), to, price, std::string("")))
       .send();
-  setBalance(asset(0, EOS_SYMBOL),to);
+  setBalance(asset(0, EOS_SYMBOL), to);
 }
 
 void salescon::assertInitialized()
 {
   auto iterator = _config.find(0);
-  eosio_assert(iterator != _config.end(), "Contract must be initialized!");
+  eosio_assert(iterator != _config.end(), "assert initialized: Contract must be initialized!");
+}
+
+void salescon::assertItemSet()
+{
+  auto config = getConfig();
+  eosio_assert(config.itemSet == true, "assertItemSet: Item was not marked as received");
 }
 
 void salescon::assertItemReceived()
 {
   auto config = getConfig();
-  eosio_assert(config.itemReceived == true, "Item was not marked as received");
+  eosio_assert(config.itemReceived == true, "assertItemReceived: Item was not marked as received");
 }
 
 void salescon::assertItemPaid()
 {
   auto config = getConfig();
-  eosio_assert(config.itemPaid == true, "Item was not paid");
+  eosio_assert(config.itemPaid == true, "assertItemPaid: Item was not paid");
 }
 
 void salescon::assertPriceEqualsValue(uint64_t value)
 {
   auto iterator = _item.find(0);
-  eosio_assert((*iterator).itemPrice.amount == value, "Transfer value must be equal to price");
+  eosio_assert((*iterator).itemPrice.amount == value, "assertPriceEqualsValue: Transfer value must be equal to price");
 }
 
 void salescon::assertRetractStatus(bool status)
 {
   auto config = getConfig();
-  status ? eosio_assert(config.contractRetracted == status, "contract must be retracted") : eosio_assert(config.contractRetracted == status, "contract must not be retracted");
+  status ? eosio_assert(config.contractRetracted == status, "assertRetractStatus: contract must be retracted") : eosio_assert(config.contractRetracted == status, "contract must not be retracted");
 }
 
 void salescon::assertContractClosedStatus(bool status)
 {
   auto config = getConfig();
-  status ? eosio_assert(config.contractRetracted == status, "contract should be closed") : eosio_assert(config.contractRetracted == status, "contract is closed");
+  status ? eosio_assert(config.contractRetracted == status, "assertContractClosedStatus: contract should be closed") : eosio_assert(config.contractRetracted == status, "contract is closed");
 }
 
 name salescon::getSeller()
@@ -307,10 +340,17 @@ asset salescon::getPrice()
   return (*iterator).itemPrice;
 }
 
+eosio::salescon::agreestruct salescon::getAgreement()
+{
+  auto agreeIt = _agreement.find(0);
+  eosio_assert(agreeIt != _agreement.end(), "getAgreement(): Contract must be initialized");
+  return (*agreeIt);
+}
+
 eosio::salescon::configstruct salescon::getConfig()
 {
   auto configIt = _config.find(0);
-  eosio_assert(configIt == _config.end(), "Contract must be initialized");
+  eosio_assert(configIt != _config.end(), "getConfig(): Contract must be initialized");
   return (*configIt);
 }
 
@@ -329,4 +369,3 @@ extern "C" void apply(uint64_t receiver, uint64_t code, uint64_t action)
     }
   }
 }
-// EOSIO_DISPATCH(salescon, (setitem)(init)(notify))

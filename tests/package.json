@@ -1,0 +1,20 @@
+{
+  "name": "tests",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "mocha --recursive --timeout 10000 --exit"
+  },
+  "dependencies": {
+    "eosjs": "^20.0.0-beta3",
+    "node-fetch": "^2.3.0",
+    "shelljs": "^0.8.3"
+  },
+  "devDependencies": {
+    "eslint": "5.10.0",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.14.0",
+    "mocha": "5.2.0",
+    "chai": "^4.2.0"
+  }
+}

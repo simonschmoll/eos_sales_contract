@@ -27,6 +27,9 @@ namespace eosio {
 
       [[eosio::action]]
       void retract(name retractor);
+      
+      [[eosio::action]]
+      void changeseller(name newSeller);
 
       struct [[eosio::table]] agreestruct {
         uint64_t key;

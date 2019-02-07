@@ -1,10 +1,17 @@
 #include <eosiolib/eosio.hpp>
 #include "./salescon.hpp"
-// #include <typeinfo>
 
 using namespace eosio;
 using namespace std;
 
+/**
+ * initialization
+ * @params { name seller, name buyer, name intermediator }
+ * @conditions none 
+ * @actions initializes config (sets seller, buyer, intermediator) and agreement struct,
+ * caller is the seller of the contract
+ * @eos action
+ */
 void salescon::init(name seller, name buyer, name intermediator)
 {
   auto iterator = _config.find(0);
@@ -33,6 +40,13 @@ void salescon::init(name seller, name buyer, name intermediator)
   setBalance(asset(0, EOS_SYMBOL), seller);
 }
 
+/**
+ * setItem
+ * @params { string itemName, uint64_t itemPrice}
+ * @conditions assertInitialization, only seller (see config), itemIsSet == false
+ * @actions sets the item in the multi index table { item }
+ * @eos action
+ */
 void salescon::setitem(std::string itemName, uint64_t itemPrice)
 {
   name seller = getSeller();
@@ -49,6 +63,13 @@ void salescon::setitem(std::string itemName, uint64_t itemPrice)
   setItemIsSetFlag(true, seller);
 }
 
+/**
+ * itemreceived
+ * @params {}
+ * @conditions itemPaid == true, only by buyer
+ * @actions sets itemReceived = true
+ * @eos action
+ */
 void salescon::itemreceived()
 {
   assertItemPaid();
@@ -57,6 +78,13 @@ void salescon::itemreceived()
   setItemReceivedFlag(true, buyer);
 }
 
+/**
+ * transfer
+ * @params { name from, name to, asset quantity, string memo }, same parameters as from the eosio.token transfer function
+ * @conditions quantity.amount == itemPrice, only buyer, contract is recipient, correct token, only positive amount, contract is intact and not retracted
+ * @actions recognizes a transfer of EOS (eosio.token contract) to this contract address, sets itemIsPaid = true and balance = itemPrice
+ * @eos action
+ */
 void salescon::transfer(name from, name to, asset quantity, string memo)
 {
   if (from == _self)
@@ -66,9 +94,10 @@ void salescon::transfer(name from, name to, asset quantity, string memo)
   name buyer = getBuyer();
 
   // Necessary asserts
-  // assertItemSet();
+  assertContractClosedStatus(false);
+  assertRetractStatus(false);
   assertPriceEqualsValue(quantity.amount);
-  eosio_assert(from == buyer, "Amount must come from buyer");
+  eosio_assert(from == buyer, "Transfer must come from buyer");
   eosio_assert(to == _self, "Contract was not the recipient");
   eosio_assert(quantity.symbol.is_valid(), "invalid quantity");
   eosio_assert(quantity.amount > 0, "only positive quantities can be transferred");
@@ -78,10 +107,19 @@ void salescon::transfer(name from, name to, asset quantity, string memo)
   itempaid(_self);
 }
 
+
+/**
+ * withdraw
+ * @params { name to }
+ * @conditions itemPaid == true, only by seller or buyer (dispute), contract intact
+ * @actions lets the seller withdraw their money, in case of dispute either buyer or seller can withdraw
+ * @eos action
+ */
 void salescon::withdraw(name to)
 {
   assertItemReceived();
-  assertItemPaid();
+  assertContractClosedStatus(false);
+  // assertRetractStatus(false);
   auto config = getConfig();
   if (config.buyerIsPaidBack)
   {
@@ -93,9 +131,18 @@ void salescon::withdraw(name to)
   }
   require_auth(to);
   auto price = getPrice();
+  setContractClosedStatus(true, to);
   sendTokens(to, price);
 }
 
+/**
+ * retract
+ * @params { name retractor }
+ * @conditions contractIsClosed == false, contractRetracted == false, only buyer, seller and intermed can retract contract
+ * buyer only if seller does not retract and seller only if buyer does not retract
+ * @actions two parties need to retract, then contractIsClosed = true (if no balance in contract) and contractRetracted = true
+ * @eos action
+ */
 void salescon::retract(name retractor)
 {
   name seller = getSeller();
@@ -127,6 +174,24 @@ void salescon::retract(name retractor)
     intermediatorRetract(intermediator);
   }
   configureRetractedState(retractor);
+}
+
+/**
+ * changeseller
+ * @params { name newSeller }
+ * @conditions only by seller, contractRetracted == false, contract is initialized
+ * @actions seller wants to change the seller account of the contract
+ * @eos action
+ */
+void salescon::changeseller(name newSeller) {
+  assertRetractStatus(false);
+  name seller = getSeller();
+  require_auth(seller);
+  auto configIt = _config.find(0);
+  eosio_assert(configIt != _config.end(), "changeseller: Contract must be initialized");
+  _config.modify(configIt, seller, [&](auto &row) {
+     row.seller = newSeller;
+  });
 }
 
 void salescon::itempaid(name payer)
@@ -303,13 +368,13 @@ void salescon::assertPriceEqualsValue(uint64_t value)
 void salescon::assertRetractStatus(bool status)
 {
   auto config = getConfig();
-  status ? eosio_assert(config.contractRetracted == status, "assertRetractStatus: contract must be retracted") : eosio_assert(config.contractRetracted == status, "contract must not be retracted");
+  status ? eosio_assert(config.contractRetracted == status, "assertRetractStatus: Contract must be retracted") : eosio_assert(config.contractRetracted == status, "Contract must not be retracted");
 }
 
 void salescon::assertContractClosedStatus(bool status)
 {
   auto config = getConfig();
-  status ? eosio_assert(config.contractRetracted == status, "assertContractClosedStatus: contract should be closed") : eosio_assert(config.contractRetracted == status, "contract is closed");
+  status ? eosio_assert(config.contractIsClosed == status, "assertContractClosedStatus: Contract should be closed") : eosio_assert(config.contractIsClosed == status, "Contract is closed");
 }
 
 name salescon::getSeller()
@@ -359,13 +424,13 @@ extern "C" void apply(uint64_t receiver, uint64_t code, uint64_t action)
   if (code == name("eosio.token").value && action == name("transfer").value)
   {
     execute_action(
-        name(receiver), name(name("salescon").value), &salescon::transfer);
+        name(receiver), name(receiver), &salescon::transfer);
   }
   else if (code == receiver)
   {
     switch (action)
     {
-      EOSIO_DISPATCH_HELPER(salescon, (setitem)(init)(itemreceived)(withdraw)(retract))
+      EOSIO_DISPATCH_HELPER(salescon, (setitem)(init)(itemreceived)(withdraw)(retract)(changeseller))
     }
   }
 }

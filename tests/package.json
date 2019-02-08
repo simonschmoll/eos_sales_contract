@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "test": "mocha --recursive --timeout 10000 --exit"
+    "test": "mocha --recursive --timeout 15000 --exit"
   },
   "dependencies": {
     "eosjs": "^20.0.0-beta3",

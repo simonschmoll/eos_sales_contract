@@ -11,8 +11,13 @@ const rpc = new JsonRpc('http://127.0.0.1:8888', { fetch });
 const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
 
 const bike = {
-  itemName: "bike", 
+  itemName: 'bike', 
   itemPrice: 100000
+}
+const initData = {
+  seller: 'seller',
+  buyer: 'buyer',
+  intermediator: 'intermed'
 }
 let contractName = '';
 
@@ -76,9 +81,10 @@ exports.beforeEach = async() => {
   return new Promise((resolve, reject) => {
     exports.changeContractName();
     const contractName = exports.getContractName();
-    console.log(contractName);
-    shell.exec(`../scripts/deployContract.sh ${contractName}` , async (code, stdout, stderr) => {
-      console.log(contractName)
+    shell.exec(`../scripts/deployContract.sh ${contractName}`, {silent:true} , async (code, stdout, stderr) => {
+      if(code !== 0) {
+        reject();
+      }
       try {
         await exports.send(contractName, 'init', 'seller', 'active', initData);
       } catch(error) {
@@ -91,12 +97,26 @@ exports.beforeEach = async() => {
 }
 
 exports.before = async() => {
-  return new Promise((resolve) => {
-    shell.exec('../scripts/initNewChainWithParams.sh', (code, stdout, stderr) => {
+  return new Promise((resolve, reject) => {
+    shell.exec('../scripts/initNewChainWithParams.sh', {silent:true}, (code, stdout, stderr) => {
+      if(code !== 0) {
+        reject();
+      }
       resolve();
     });
     console.log('Calling before');
   })
+}
+
+exports.getRows = async (table) => { 
+  let contractName = exports.getContractName();
+  return await rpc.get_table_rows({
+    json: true,             
+    code: contractName,    
+    scope: contractName,         
+    table: table,     
+    limit: 10       
+  });
 }
 
 function generateRandomName() {
@@ -106,3 +126,4 @@ function generateRandomName() {
     result += possible.charAt(Math.floor(Math.random() * possible.length));
   return result;
 }
+

@@ -108,13 +108,23 @@ exports.before = async() => {
   })
 }
 
-exports.getRows = async (table) => { 
+exports.getRowsSaleCon = async (table) => { 
   let contractName = exports.getContractName();
   return await rpc.get_table_rows({
     json: true,             
     code: contractName,    
     scope: contractName,         
     table: table,     
+    limit: 10       
+  });
+}
+
+exports.getRowsGeneral = async (contractName, scope,  tableName) => { 
+  return await rpc.get_table_rows({
+    json: true,             
+    code: contractName,    
+    scope,         
+    table: tableName,     
     limit: 10       
   });
 }

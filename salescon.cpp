@@ -119,7 +119,6 @@ void salescon::withdraw(name to)
 {
   assertItemReceived();
   assertContractClosedStatus(false);
-  // assertRetractStatus(false);
   auto config = getConfig();
   if (config.buyerIsPaidBack)
   {
@@ -132,6 +131,7 @@ void salescon::withdraw(name to)
   require_auth(to);
   auto price = getPrice();
   setContractClosedStatus(true, to);
+  setBalance(asset(0, EOS_SYMBOL), to);
   sendTokens(to, price);
 }
 

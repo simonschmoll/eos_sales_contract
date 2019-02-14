@@ -5,3 +5,4 @@ echo "PW5K5upnuvVKh1XXZHzz7f7qFoMN4DNoZZHUvvQXaHAX7HNprxMtM" | cleos wallet unlo
 cleos create account eosio seller EOS8EXyGVLjxTPyaZyEqJDzthx1SPNec3g13MgcYbNQTLv9KC5wkL
 cleos create account eosio buyer EOS8EXyGVLjxTPyaZyEqJDzthx1SPNec3g13MgcYbNQTLv9KC5wkL
 cleos create account eosio intermed EOS8EXyGVLjxTPyaZyEqJDzthx1SPNec3g13MgcYbNQTLv9KC5wkL
+cleos create account eosio random EOS8EXyGVLjxTPyaZyEqJDzthx1SPNec3g13MgcYbNQTLv9KC5wkL

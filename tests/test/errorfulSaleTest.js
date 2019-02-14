@@ -218,8 +218,8 @@ describe('Errorful sales functionality', () => {
       await testService.setItem('seller');
       await testService.pay('buyer');
       await testService.itemReceived('buyer')
-      await testService.retract('buyer', 'buyer');
-      await testService.retract('intermed', 'intermed');
+      await testService.retract('buyer');
+      await testService.retract('intermed');
     } catch (error) {
       assert.equal(true, false, 'Setup is throwing an error')
     }
@@ -239,8 +239,8 @@ describe('Errorful sales functionality', () => {
       await testService.setItem('seller');
       await testService.pay('buyer');
       await testService.itemReceived('buyer')
-      await testService.retract('seller', 'seller');
-      await testService.retract('intermed', 'intermed');
+      await testService.retract('seller');
+      await testService.retract('intermed');
     } catch (error) {
       assert.equal(true, false, 'Setup is throwing an error')
     }

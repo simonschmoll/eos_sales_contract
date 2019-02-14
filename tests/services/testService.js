@@ -62,8 +62,8 @@ exports.changeSeller = async (from, newSeller) => {
   await exports.send(exports.getContractName(), 'changeseller', from, 'active', { newSeller });
 }
 
-exports.retract = async (from, retractor) => {
-  await exports.send(exports.getContractName(), 'retract', from , 'active', { retractor });
+exports.retract = async (from) => {
+  await exports.send(exports.getContractName(), 'retract', from , 'active', { retractor: from });
 }
 
 exports.itemReceived = async (from) => {
@@ -110,7 +110,7 @@ exports.before = async() => {
 
 exports.getRowsSaleCon = async (table) => { 
   let contractName = exports.getContractName();
-  return await rpc.get_table_rows({
+  return rpc.get_table_rows({
     json: true,             
     code: contractName,    
     scope: contractName,         
@@ -120,7 +120,7 @@ exports.getRowsSaleCon = async (table) => {
 }
 
 exports.getRowsGeneral = async (contractName, scope,  tableName) => { 
-  return await rpc.get_table_rows({
+  return rpc.get_table_rows({
     json: true,             
     code: contractName,    
     scope,         

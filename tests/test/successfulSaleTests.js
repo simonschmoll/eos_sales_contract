@@ -147,4 +147,90 @@ describe('Successful sales functionality', () => {
     assert.deepEqual(balanceContractAfter, '0.0000 SYS')
     assert.deepEqual(parseFloat(balanceSellerAfter) - parseFloat(balanceSellerBefore), 10.0000)    
   })
+
+  it('Withdraw money by buyer after dispute', async () => {
+    // When
+    let tokenBalanceBuyerBefore;
+    try {
+      tokenBalanceBuyerBefore = await testService.getRowsGeneral('eosio.token', 'buyer', 'accounts');
+    } catch (error) {
+      console.log(error);
+      
+      assert.ifError(error)
+    }
+    const { balance: balanceBuyerBefore } = tokenBalanceBuyerBefore.rows[0];
+
+    try {
+      await testService.setItem('seller');
+      await testService.pay('buyer');
+      await testService.itemReceived('buyer');
+      await testService.retract('buyer');
+      await testService.retract('intermed');
+      await testService.withdraw('buyer');
+    } catch (error) {
+      console.log(error);
+      
+      assert.ifError(error)
+    }
+    const data = await testService.getRowsSaleCon('config')
+    const { contractIsClosed, balance, contractRetracted } = data.rows[0]
+
+    // Then
+    assert.deepEqual(contractIsClosed, 1)
+    assert.deepEqual(contractRetracted, 1)
+    assert.deepEqual(balance, '0.0000 SYS')
+    let tokenBalanceContractAfter;
+    let tokenBalanceBuyerAfter;
+    try {
+      tokenBalanceContractAfter = await testService.getRowsGeneral('eosio.token', testService.getContractName(), 'accounts');
+      tokenBalanceBuyerAfter = await testService.getRowsGeneral('eosio.token', 'buyer', 'accounts');
+    } catch (error) {
+      assert.ifError(error)
+    }
+    const { balance: balanceContractAfter } = tokenBalanceContractAfter.rows[0];
+    const { balance: balanceBuyerAfter } = tokenBalanceBuyerAfter.rows[0];    
+    assert.deepEqual(balanceContractAfter, '0.0000 SYS')
+    assert.deepEqual(parseFloat(balanceBuyerAfter) - parseFloat(balanceBuyerBefore), 0)    
+  })
+
+  it('Withdraw money by seller after dispute', async () => {
+    // When
+    let tokenBalanceSellerBefore;
+    try {
+      tokenBalanceSellerBefore = await testService.getRowsGeneral('eosio.token', 'seller', 'accounts');
+    } catch (error) {
+      assert.ifError(error)
+    }
+    const { balance: balanceSellerBefore } = tokenBalanceSellerBefore.rows[0];
+
+    try {
+      await testService.setItem('seller');
+      await testService.pay('buyer');
+      await testService.itemReceived('buyer');
+      await testService.retract('seller');
+      await testService.retract('intermed');
+      await testService.withdraw('seller');
+    } catch (error) {
+      assert.ifError(error)
+    }
+    const data = await testService.getRowsSaleCon('config')
+    const { contractIsClosed, balance, contractRetracted } = data.rows[0]
+
+    // Then
+    assert.deepEqual(contractIsClosed, 1)
+    assert.deepEqual(contractRetracted, 1)
+    assert.deepEqual(balance, '0.0000 SYS')
+    let tokenBalanceContractAfter;
+    let tokenBalanceSellerAfter;
+    try {
+      tokenBalanceContractAfter = await testService.getRowsGeneral('eosio.token', testService.getContractName(), 'accounts');
+      tokenBalanceSellerAfter = await testService.getRowsGeneral('eosio.token', 'seller', 'accounts');
+    } catch (error) {
+      assert.ifError(error)
+    }
+    const { balance: balanceContractAfter } = tokenBalanceContractAfter.rows[0];
+    const { balance: balanceSellerAfter } = tokenBalanceSellerAfter.rows[0];    
+    assert.deepEqual(balanceContractAfter, '0.0000 SYS')
+    assert.deepEqual(parseFloat(balanceSellerAfter) - parseFloat(balanceSellerBefore), 10.0000)    
+  })
 });

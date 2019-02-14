@@ -2,7 +2,7 @@ const testService = require('../services/testService');
 const { assert } = require('chai');
 
 
-before(() => testService.before());
+// before(() => testService.before());
 
 beforeEach(() =>  testService.beforeEach());
 
@@ -33,8 +33,8 @@ describe('Errorful changing seller tests', () => {
       try {
         await testService.setItem('seller');
         await testService.pay('buyer');
-        await testService.retract('seller', 'seller');
-        await testService.retract('intermed', 'intermed');
+        await testService.retract('seller');
+        await testService.retract('intermed');
       }
       catch(error) {
         console.log(error);

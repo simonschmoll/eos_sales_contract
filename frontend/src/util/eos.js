@@ -8,49 +8,106 @@ import scatter from 'eos-transit-scatter-provider';
 // and tracking state of connected wallets.
 
 // We're using our own test network as an example here.
-const accessContext = initAccessContext({
-  appName: 'Babo',
-  network: {
-    host: '127.0.0.1',
-    port: 8888,
-    protocol: 'http',
-    chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
-  },
-  walletProviders: [
-    scatter(),
-  ],
-});
-
-// We're all set now and can get the list of available wallet providers
-// (we only have Scatter provider configured, so there will be only one):
-const walletProviders = accessContext.getWalletProviders();
-/* [{
- *   id: 'scatter',
- *   meta: {
- *    name: 'Scatter Desktop',
- *    shortName: 'Scatter',
- *    description: 'Scatter Desktop application that keeps your private keys secure'
- *   },
- *   signatureProvider,
- *   ... etc
- * }]
- */
-
-// This list can be used to, e.g., show the "login options" to the user to let him choose
-// what EOS login method he wants to use.
-
-// We just take the one we have as if the user has selected that
-const selectedProvider = walletProviders[0];
-
+let sellerWallet;
+let buyerWallet;
+let intermedWallet;
+const walletProvidersConf = [
+  scatter(),
+];
+const network = {
+  host: '127.0.0.1',
+  port: 8888,
+  protocol: 'http',
+  chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
+};
 // When user selects the wallet provider, we initiate the `Wallet` with it:
-const wallet = accessContext.initWallet(selectedProvider);
+// const wallet = accessContext.initWallet(selectedProvider);
 
-(async () => {
-  await wallet.connect();
-  // await wallet.login();
-})();
+const initBuyerWallet = async () => {
+  const accessContextBuyer = initAccessContext({
+    appName: 'Buyer',
+    network,
+    walletProviders: walletProvidersConf,
+  });
+  const walletProviders = accessContextBuyer.getWalletProviders();
+  const selectedProvider = walletProviders[0];
+  buyerWallet = await accessContextBuyer.initWallet(selectedProvider);
+  console.log('In Init buyer wallet');
 
-export default { wallet };
+  await buyerWallet.connect();
+  await buyerWallet.login();
+};
+
+const initIntermedWallet = async () => {
+  const accessContextIntermed = initAccessContext({
+    appName: 'Intermed',
+    network,
+    walletProviders: walletProvidersConf,
+  });
+  const walletProviders = accessContextIntermed.getWalletProviders();
+  const selectedProvider = walletProviders[0];
+  intermedWallet = await accessContextIntermed.initWallet(selectedProvider);
+  await intermedWallet.connect();
+  await intermedWallet.login();
+};
+
+
+const initSellerWallet = async () => {
+  const accessContextSeller = initAccessContext({
+    appName: 'Seller',
+    network,
+    walletProviders: walletProvidersConf,
+  });
+  const walletProviders = accessContextSeller.getWalletProviders();
+  const selectedProvider = walletProviders[0];
+  sellerWallet = await accessContextSeller.initWallet(selectedProvider);
+  await sellerWallet.connect();
+  await sellerWallet.login();
+};
+
+const getSellerWallet = async () => {
+  console.log('getSellerWallet beginning');
+  if (sellerWallet === undefined) {
+    await initSellerWallet();
+    console.log('Init Seller Wallet ', sellerWallet);
+  }
+  console.log('getSellerWallet init after undefinded check');
+  if (sellerWallet.authenticated === false) {
+    await sellerWallet.login();
+  }
+  return sellerWallet;
+};
+
+const getBuyerWallet = async () => {
+  console.log('Buyer Wallet: ', buyerWallet);
+
+  if (buyerWallet === undefined) {
+    await initBuyerWallet();
+    console.log('Init Buyer Wallet ', buyerWallet);
+  }
+  if (buyerWallet.authenticated === false) {
+    await buyerWallet.login();
+  }
+  return buyerWallet;
+};
+
+const getIntermedWallet = async () => {
+  if (intermedWallet === undefined) {
+    await initIntermedWallet();
+    console.log('Init Intermed Wallet ', intermedWallet);
+  }
+  if (intermedWallet.authenticated === false) {
+    await intermedWallet.login();
+  }
+  return intermedWallet;
+};
+
+
+export default {
+  getSellerWallet,
+  getIntermedWallet,
+  getBuyerWallet,
+};
 
 // Now we have an instance of `wallet` that is tracked by our `accessContext`.
 // Lets connect to it and authenticate (you need Scatter app running)

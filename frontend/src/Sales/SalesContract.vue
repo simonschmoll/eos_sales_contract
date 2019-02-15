@@ -149,10 +149,10 @@ export default {
       getBalance: 'getBalance',
     }),
     contract() {
-      console.log(
-        'Returning contract instance',
-        this.$store.state.eosModule.contractState,
-      );
+      // console.log(
+      //   'Returning contract instance',
+      //   this.$store.state.eosModule.contractState,
+      // );
       return this.$store.state.eosModule.contractState;
     },
   },
@@ -169,7 +169,7 @@ export default {
       this.$store.dispatch('receivedItem');
     },
     pay(price) {
-      console.log('User wants to pay item (SalesContract)');
+      console.log('User wants to pay item (SalesContract)', price);
       this.$store.dispatch('pay', price);
     },
     withdraw(agreement) {

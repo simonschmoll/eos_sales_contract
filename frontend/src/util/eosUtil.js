@@ -1,65 +1,28 @@
 // import getEos from './getEos';
 import eos from './eos';
-// async function getAccount() {
-//   return getWeb3.eth.getAccounts();
-// }
+import getRpc from './getEos';
 
-// async function loadContract(contractAddress) {
-//   const contract = new getWeb3.eth.Contract(
-//     abi, contractAddress,
-//   );
-//   return contract;
-// }
-// async function deployContract(seller, buyer, intermediator) {
-//   const contract = new getWeb3.eth.Contract(
-//     abi,
-//   );
-//   console.log('Seller, Buyer, interm in web3util deploy:', seller, buyer, intermediator);
-//   return contract.deploy({
-//     data: bytecode.toString(),
-//     arguments: ['0xbf8f723E3ceFB60760F4De122E1c38212BC9E6DE', '0xD8032D9C8691150d8bBB83B2AB8348feab23c0C3'],
-//   }).send({ from: '0xa971e6cB801EC457840D6837B4796BCB0a0C55e3' });
-// }
+async function send(account, actionName, data, wallet) {
+  // await eos.terminateWallet();
 
-// async function loadExistingContract(address) {
-//   const contract = new getWeb3.eth.Contract(
-//     abi, address,
-//   );
-//   return contract;
-// }
+  // console.log('wallet is', wallet);
 
-// async function loadContractData(contract, contractState) {
-//   return new Promise(async (resolve, reject) => {
-//     await contract.methods.getContractBalance().call()
-//       .then((result) => { contractState.balance = result; });
-//     await contract.methods.getItem().call()
-//       .then((result) => { contractState.item = result; });
-//     await contract.methods.getSeller().call()
-//       .then((result) => { contractState.seller = result; });
-//     await contract.methods.getBuyer().call()
-//       .then((result) => { contractState.buyer = result; });
-//     await contract.methods.getIntermediator().call()
-//       .then((result) => { contractState.intermediator = result; });
-//     await contract.methods.getIsContractClosed().call()
-//       .then((result) => { contractState.contractClosed = result; });
-//     await contract.methods.getAgreement().call()
-//       .then((result) => { contractState.agreement = result; });
-//     await contract.methods.getBuyerIsPaidBack().call()
-//       .then((result) => { contractState.buyerIsPaidBack = result; });
-//     console.log('web3util: Contract Instance is:', contractState);
-//     resolve(contractState);
-//     reject(new Error('Could not load contract data'));
-//   });
-// }
-async function send(account, actionName, data) {
-  await eos.wallet.connect();
-  await eos.wallet.login();
-  console.log('Wallet: ', eos.wallet);
-  console.log('Wallet permission ', eos.wallet.auth.permission);
-  console.log('Wallet accountname: ', eos.wallet.auth.accountName);
-  console.log('Wallet rpc: ', eos.wallet.ctx.eosRpc);
+  // await wallet.connect();
+  // await wallet.login('buyer');
+  // // eslint-disable-next-line
+  // await wallet.provider.login("buyer");
 
-  return eos.wallet.eosApi
+  console.log('Wallet in Send: ', wallet);
+  // console.log('Wallet permission ', eos.wallet.auth.permission);
+  // console.log('Wallet accountname: ', eos.wallet.auth.accountName);
+  // console.log('Wallet rpc: ', eos.wallet.ctx.eosRpc);
+  if (wallet.authenticated === false) {
+    console.log('Need to login again from Send function');
+
+    await wallet.connect();
+    await wallet.login();
+  }
+  return wallet.eosApi
     .transact({
       actions: [
         {
@@ -67,8 +30,8 @@ async function send(account, actionName, data) {
           name: actionName,
           authorization: [
             {
-              actor: eos.wallet.auth.accountName,
-              permission: eos.wallet.auth.permission,
+              actor: wallet.auth.accountName,
+              permission: wallet.auth.permission,
             },
           ],
           data,
@@ -80,48 +43,114 @@ async function send(account, actionName, data) {
       blocksBehind: 3,
       expireSeconds: 60,
     });
+  // .then((result) => {
+  //   console.log('Transaction success!', result);
+  //   return result;
+  // })
+  // .catch((error) => {
+  //   console.error('Transaction error :(', error);
+  //   throw error;
+  // });
 }
 
 function getContractName() {
   return 'salescon';
 }
 
-async function setItem(from, item) {
-  await send(getContractName(), 'setitem', from, 'active', item);
+async function setItem(item) {
+  console.log('In Set Item');
+  const wallet = await eos.getSellerWallet();
+  console.log('Wallet in setItem', wallet);
+
+  return send(getContractName(), 'setitem', item, wallet);
 }
 
-async function pay(from, data) {
-  await send('eosio.token', 'transfer', from, 'active', data);
+async function pay(price) {
+  console.log('Pay called');
+  const wallet = await eos.getBuyerWallet();
+  const data = {
+    from: wallet.auth.accountName,
+    to: getContractName(),
+    quantity: price,
+    memo: '',
+  };
+  return send('eosio.token', 'transfer', data, wallet);
 }
 
-// const setItem = async (from, item = bike) => {
-//   await send(getContractName(), 'setitem', from, 'active', item);
-// }
+const changeSeller = async newSeller => send(getContractName(), 'changeseller', { newSeller });
 
-const changeSeller = async (from, newSeller) => {
-  await send(getContractName(), 'changeseller', from, 'active', { newSeller });
+const retractSeller = async (from) => {
+  const wallet = await eos.getSellerWallet();
+  send(getContractName(), 'retract', { retractor: from }, wallet);
+};
+const retractIntermed = async (from) => {
+  const wallet = await eos.getIntermedWallet();
+  send(getContractName(), 'retract', { retractor: from }, wallet);
+};
+const retractBuyer = async (from) => {
+  const wallet = await eos.getBuyerWallet();
+  send(getContractName(), 'retract', { retractor: from }, wallet);
 };
 
-const retract = async (from) => {
-  await send(getContractName(), 'retract', from, 'active', { retractor: from });
+const itemReceived = async () => {
+  const wallet = await eos.getBuyerWallet();
+  send(getContractName(), 'itemreceived', {}, wallet);
 };
 
-const itemReceived = async (from) => {
-  await send(getContractName(), 'itemreceived', from, 'active', {});
-};
+const withdraw = async (account) => {
+  const wallet = await eos.getSellerWallet();
+  console.log('Withdraw wallet', wallet);
 
-const withdraw = async (from) => {
-  await send(getContractName(), 'withdraw', from, 'active', { to: from });
+  send(getContractName(), 'withdraw', { to: account.toString() }, wallet);
 };
 
 const getRowsSaleCon = async (table) => {
   const contractName = getContractName();
-  return eos.wallet.ctx.eosRpc.get_table_rows({
+  return getRpc.rpc.get_table_rows({
     json: true,
     code: contractName,
     scope: contractName,
     table,
     limit: 10,
+  });
+};
+
+const getContractData = async () => {
+  const config = getRowsSaleCon('config');
+  const agreement = getRowsSaleCon('agreement');
+  const item = getRowsSaleCon('item');
+  return Promise.all([config, agreement, item]).then((value) => {
+    // console.log(value);
+    let name;
+    let price;
+    if (value[2].rows.length < 1) {
+      name = '';
+      price = 0;
+    } else {
+      name = value[2].rows[0].itemName;
+      price = value[2].rows[0].itemPrice;
+    }
+    const data = {
+      retracted: value[0].rows[0].contractRetracted,
+      agreement: {
+        sellerRetract: value[1].rows[0].sellerRetract,
+        buyerRetract: value[1].rows[0].buyerRetract,
+        intermediatorRetract: value[1].rows[0].intermediatorRetract,
+      },
+      balance: value[0].rows[0].balance,
+      seller: value[0].rows[0].seller,
+      buyer: value[0].rows[0].buyer,
+      intermediator: value[0].rows[0].intermediator,
+      contractClosed: value[0].rows[0].contractIsClosed,
+      buyerIsPaidBack: value[0].rows[0].buyerIsPaidBack,
+      item: {
+        itemPaid: value[0].rows[0].itemPaid,
+        itemReceived: value[0].rows[0].itemReceived,
+        name,
+        price,
+      },
+    };
+    return data;
   });
 };
 
@@ -193,9 +222,12 @@ export default {
   withdraw,
   pay,
   changeSeller,
-  retract,
+  retractSeller,
+  retractBuyer,
+  retractIntermed,
   itemReceived,
   getRowsSaleCon,
+  getContractData,
   // itemReceived,
   // loadExistingContract,
   // payItem,

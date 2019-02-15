@@ -19,13 +19,29 @@
 <script>
 export default {
   name: 'app',
+  data() {
+    return {
+      polling: null,
+    };
+  },
   created() {
     console.log('Create web3 instance from SalesContract app');
-    this.$store.dispatch('loadInitialData');
+    this.$store.dispatch('loadData');
+    this.poll();
+  },
+  beforeDestroy() {
+    clearInterval(this.polling);
+  },
+  methods: {
+    poll() {
+      this.polling = setInterval(() => {
+        this.$store.dispatch('pollContract');
+      }, 3000);
+    },
   },
   computed: {
     contractInstance() {
-      console.log('Returning contractInstance', this.$store.state.contractInstance);
+      // console.log('Returning contractInstance', this.$store.state.contractInstance);
       return this.$store.state.eosModule.contractInstance;
     },
   },

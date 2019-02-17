@@ -97,7 +97,14 @@ const itemReceived = async () => {
   send(getContractName(), 'itemreceived', {}, wallet);
 };
 
-const withdraw = async (account) => {
+const withdrawBuyer = async (account) => {
+  const wallet = await eos.getBuyerWallet();
+  console.log('Withdraw buyer wallet', wallet);
+
+  send(getContractName(), 'withdraw', { to: account.toString() }, wallet);
+};
+
+const withdrawSeller = async (account) => {
   const wallet = await eos.getSellerWallet();
   console.log('Withdraw wallet', wallet);
 
@@ -219,7 +226,8 @@ export default {
   // loadContract,
   setItem,
   send,
-  withdraw,
+  withdrawBuyer,
+  withdrawSeller,
   pay,
   changeSeller,
   retractSeller,

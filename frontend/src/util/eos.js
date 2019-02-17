@@ -70,6 +70,9 @@ const getSellerWallet = async () => {
   if (sellerWallet === undefined) {
     await initSellerWallet();
     console.log('Init Seller Wallet ', sellerWallet);
+  } else {
+    await sellerWallet.terminate();
+    await initSellerWallet();
   }
   console.log('getSellerWallet init after undefinded check');
   if (sellerWallet.authenticated === false) {
@@ -84,6 +87,9 @@ const getBuyerWallet = async () => {
   if (buyerWallet === undefined) {
     await initBuyerWallet();
     console.log('Init Buyer Wallet ', buyerWallet);
+  } else {
+    await buyerWallet.terminate();
+    await initBuyerWallet();
   }
   if (buyerWallet.authenticated === false) {
     await buyerWallet.login();
@@ -95,6 +101,9 @@ const getIntermedWallet = async () => {
   if (intermedWallet === undefined) {
     await initIntermedWallet();
     console.log('Init Intermed Wallet ', intermedWallet);
+  } else {
+    await intermedWallet.terminate();
+    await initIntermedWallet();
   }
   if (intermedWallet.authenticated === false) {
     await intermedWallet.login();

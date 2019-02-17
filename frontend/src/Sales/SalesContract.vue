@@ -78,7 +78,7 @@
               <button class="buttonSeller" @click="withdraw(getAgreement)">Withdraw</button>
             </td>
             <td class="tdAction">
-              <button class="buttonRetract" @click="retract()">Retract</button>
+              <button class="buttonRetract" @click="retractSeller()">Retract</button>
             </td>
           </tr>
         </table>
@@ -100,7 +100,7 @@
               <button class="buttonBuyer" @click="pay(getItem.price)">Pay Item</button>
             </td>
             <td class="tdAction">
-              <button class="buttonRetract" @click="retract()">Retract</button>
+              <button class="buttonRetract" @click="retractBuyer()">Retract</button>
             </td>
             <td v-if="getBuyerIsPaidBack" class="tdAction">
               <button class="buttonWithdrawDispute"
@@ -117,7 +117,7 @@
           </tr>
           <tr>
             <td class="tdAction">
-              <button class="buttonRetract" @click="retract()">Retract</button>
+              <button class="buttonRetract" @click="retractIntermed()">Retract</button>
             </td>
           </tr>
         </table>
@@ -174,19 +174,27 @@ export default {
     },
     withdraw(agreement) {
       console.log('Seller wants to withdraw money');
-      if (agreement.sellerRetract && (agreement.buyerRetract || agreement.intermediatorRetract)) {
-        this.$store.dispatch('withdrawAfterDisputeSeller');
-      } else {
-        this.$store.dispatch('withdraw');
-      }
+      // if (agreement.sellerRetract && (agreement.buyerRetract || agreement.intermediatorRetract)) {
+      //   this.$store.dispatch('withdrawAfterDisputeSeller');
+      // } else {
+      this.$store.dispatch('withdraw');
+      // }
     },
     withdrawAfterDisputeBuyer() {
       console.log('Buyer wants to withdraw money after dispute');
       this.$store.dispatch('withdrawAfterDisputeBuyer');
     },
-    retract() {
-      console.log('User wants to retract (SalesContract)');
-      this.$store.dispatch('retract');
+    retractBuyer() {
+      console.log('Buyer wants to retract (SalesContract)');
+      this.$store.dispatch('retractBuyer');
+    },
+    retractIntermed() {
+      console.log('Intermed wants to retract (SalesContract)');
+      this.$store.dispatch('retractIntermed');
+    },
+    retractSeller() {
+      console.log('Seller wants to retract (SalesContract)');
+      this.$store.dispatch('retractSeller');
     },
   },
 };

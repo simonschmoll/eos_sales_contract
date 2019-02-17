@@ -18,12 +18,11 @@ const { Serialize } = require('eos-transit/node_modules/eosjs');
 //   };
 // }
 
-async function deployContract({ account, contractDir }) {
-  await eos.wallet.connect();
-  await eos.wallet.login();
-  console.log('eos', eos.wallet);
+async function deployContract() {
+  const wallet = await eos.getSellerWallet();
+  console.log('eos', wallet);
 
-  const api = eos.wallet.eosApi;
+  const api = wallet.eosApi;
   // const { wasmPath, abiPath } = getDeployableFilesFromDir(contractDir);
 
   // 1. Prepare SETCODE
@@ -49,19 +48,33 @@ async function deployContract({ account, contractDir }) {
   //   textDecoder: new TextDecoder(),
   // });
 
-  const abiBuffer = await fetch('./salescon.wasm')
+  const abiBuffer = await fetch('./salescon.abi')
     .then((res) => {
       if (res.ok) {
         return res.arrayBuffer();
       }
-      throw new Error('Unable to fetch WASM.');
+      throw new Error('Unable to fetch abi.');
     })
     .then((bytes) => {
-      console.log('Bytes abi', Buffer.from(bytes));
-      return Buffer.from(bytes);
+      console.log('Bytes abi', bytes);
+      return JSON.parse(Buffer.from(bytes).asUint8Array());
     });
 
-  const abiJson = await api.rawAbiToJson(abiBuffer);
+  let abiJson = await api.rawAbiToJson(abiBuffer);
+
+  const abiDefinition = api.abiTypes.get('abi_def');
+  // need to make sure abi has every field in abiDefinition.fields
+  // otherwise serialize throws
+  abiJson = abiDefinition.fields.reduce(
+    (acc, { name: fieldName }) => Object.assign(acc, { [fieldName]: acc[fieldName] || [] }),
+    abiJson,
+  );
+
+  const buffer = new Serialize.SerialBuffer({
+    textEncoder: new TextEncoder(),
+    textDecoder: new TextDecoder(),
+  });
+  abiDefinition.serialize(buffer, abiJson);
   // let abi = JSON.parse(fs.readFileSync('./salescon.abi', 'utf8'));
   // // let abi = JSON.parse(fs.readFileSync(abiPath, 'utf8'));
   // const abiDefinition = api.abiTypes.get('abi_def');
@@ -81,12 +94,12 @@ async function deployContract({ account, contractDir }) {
           name: 'setcode',
           authorization: [
             {
-              actor: eos.wallet.auth.accountName,
-              permission: eos.wallet.auth.permission,
+              actor: wallet.auth.accountName,
+              permission: wallet.auth.permission,
             },
           ],
           data: {
-            account: eos.wallet.auth.accountName,
+            account: wallet.auth.accountName,
             vmtype: 0,
             vmversion: 0,
             code: wasmBuffer,
@@ -97,13 +110,13 @@ async function deployContract({ account, contractDir }) {
           name: 'setabi',
           authorization: [
             {
-              actor: eos.wallet.auth.accountName,
-              permission: eos.wallet.auth.permission,
+              actor: wallet.auth.accountName,
+              permission: wallet.auth.permission,
             },
           ],
           data: {
-            account: eos.wallet.auth.accountName,
-            abi: abiJson,
+            account: wallet.auth.accountName,
+            abi: Buffer.from(buffer.asUint8Array()).toString('hex'),
           },
         },
       ],

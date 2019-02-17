@@ -1,5 +1,6 @@
 import eosUtil from '../../util/eosUtil';
 import getRpc from '../../util/getEos';
+import deployContract from '../../util/deployContract';
 // import deploy from '../../util/deployContract';
 
 export default {
@@ -37,6 +38,7 @@ export default {
 
     async loadData({ state, commit }) {
       console.log('Loading InitialData');
+      // deployContract.deployContract();
       state.contractInstance = getRpc;
       const data = await eosUtil.getContractData();
       commit('loadData', data);
@@ -63,35 +65,30 @@ export default {
       //     dispatch('loadData');
       //   });
     },
-
-    async loadBalance({ commit, state }) {
-      // eosUtil.getBalance(state.contractInstance)
-      //   .then((balance) => {
-      //     commit('pay');
-      //     commit('updateBalance', balance);
-      //   });
+    async retractBuyer({ state }) {
+      console.log('Mutation retractBuyer');
+      eosUtil.retractBuyer(state.contractState.buyer);
     },
-    async withdraw({ commit, state }) {
+    async retractSeller({ state }) {
+      console.log('Mutation retractSeller');
+
+      eosUtil.retractSeller(state.contractState.seller);
+    },
+    async retractIntermed({ state }) {
+      console.log('Mutation retractIntermed');
+      eosUtil.retractIntermed(state.contractState.intermediator);
+    },
+    async withdraw({ state }) {
       console.log('State is', state);
-
-      eosUtil.withdraw(state.contractState.seller)
-        .then(async () => {
-          const data = await eosUtil.getContractData();
-          commit('loadData', data);
-        });
+      eosUtil.withdrawSeller(state.contractState.seller);
     },
-    async retract({ dispatch, state }) {
-      // eosUtil.retractContract(state.contractInstance)
-      //   .then(() => dispatch('loadContractData'));
+    async withdrawAfterDisputeBuyer({ state }) {
+      eosUtil.withdrawBuyer(state.contractState.buyer);
     },
-    async withdrawAfterDisputeBuyer({ dispatch, state }) {
-      // eosUtil.withdrawAfterDisputeBuyer(state.contractInstance)
-      //   .then(() => dispatch('loadContractData'));
-    },
-    async withdrawAfterDisputeSeller({ dispatch, state }) {
-      // eosUtil.withdrawAfterDisputeSeller(state.contractInstance)
-      //   .then(() => dispatch('loadContractData'));
-    },
+    // async withdrawAfterDisputeSeller({ dispatch, state }) {
+    //   // eosUtil.withdrawAfterDisputeSeller(state.contractInstance)
+    //   //   .then(() => dispatch('loadContractData'));
+    // },
     // async getAgreement({ commit, state }) {
     //   eosUtil.getAgreement(state.contractInstance)
     //     .then((result) => { commit('updateAgreement', result); });

@@ -29,7 +29,7 @@ describe('Successful sales functionality', () => {
     assert.deepEqual(config.contractIsClosed, 0)
     assert.deepEqual(config.contractRetracted, 0)
     assert.deepEqual(config.buyerIsPaidBack, 0)
-    assert.deepEqual(config.balance, '0.0000 SYS')
+    assert.deepEqual(config.balance, '0.0000 EOS')
     assert.deepEqual(config.seller, 'seller')
     assert.deepEqual(config.buyer, 'buyer')
     assert.deepEqual(config.intermediator, 'intermed')
@@ -55,7 +55,7 @@ describe('Successful sales functionality', () => {
     // Then
     assert.deepEqual(key, 0)
     assert.deepEqual(itemName, 'bike')
-    assert.deepEqual(itemPrice, '10.0000 SYS')
+    assert.deepEqual(itemPrice, '10.0000 EOS')
   })
 
   it('Item is paid by buyer', async () => {
@@ -79,7 +79,7 @@ describe('Successful sales functionality', () => {
 
     // Then
     assert.deepEqual(itemPaid, 1)
-    assert.deepEqual(balance, '10.0000 SYS')
+    assert.deepEqual(balance, '10.0000 EOS')
     let tokenBalanceContract;
     let tokenBalanceBuyerAfter;
     try {
@@ -90,7 +90,7 @@ describe('Successful sales functionality', () => {
     }
     const { balance: balanceContract } = tokenBalanceContract.rows[0];
     const { balance: balanceBuyerAfter } = tokenBalanceBuyerAfter.rows[0];    
-    assert.deepEqual(balanceContract, '10.0000 SYS')
+    assert.deepEqual(balanceContract, '10.0000 EOS')
     assert.deepEqual(parseFloat(balanceBuyerBefore) - parseFloat(balanceBuyerAfter), 10.0000)    
   })
 
@@ -133,7 +133,7 @@ describe('Successful sales functionality', () => {
 
     // Then
     assert.deepEqual(contractIsClosed, 1)
-    assert.deepEqual(balance, '0.0000 SYS')
+    assert.deepEqual(balance, '0.0000 EOS')
     let tokenBalanceContractAfter;
     let tokenBalanceSellerAfter;
     try {
@@ -144,7 +144,7 @@ describe('Successful sales functionality', () => {
     }
     const { balance: balanceContractAfter } = tokenBalanceContractAfter.rows[0];
     const { balance: balanceSellerAfter } = tokenBalanceSellerAfter.rows[0];    
-    assert.deepEqual(balanceContractAfter, '0.0000 SYS')
+    assert.deepEqual(balanceContractAfter, '0.0000 EOS')
     assert.deepEqual(parseFloat(balanceSellerAfter) - parseFloat(balanceSellerBefore), 10.0000)    
   })
 
@@ -178,7 +178,7 @@ describe('Successful sales functionality', () => {
     // Then
     assert.deepEqual(contractIsClosed, 1)
     assert.deepEqual(contractRetracted, 1)
-    assert.deepEqual(balance, '0.0000 SYS')
+    assert.deepEqual(balance, '0.0000 EOS')
     let tokenBalanceContractAfter;
     let tokenBalanceBuyerAfter;
     try {
@@ -189,7 +189,7 @@ describe('Successful sales functionality', () => {
     }
     const { balance: balanceContractAfter } = tokenBalanceContractAfter.rows[0];
     const { balance: balanceBuyerAfter } = tokenBalanceBuyerAfter.rows[0];    
-    assert.deepEqual(balanceContractAfter, '0.0000 SYS')
+    assert.deepEqual(balanceContractAfter, '0.0000 EOS')
     assert.deepEqual(parseFloat(balanceBuyerAfter) - parseFloat(balanceBuyerBefore), 0)    
   })
 
@@ -219,7 +219,7 @@ describe('Successful sales functionality', () => {
     // Then
     assert.deepEqual(contractIsClosed, 1)
     assert.deepEqual(contractRetracted, 1)
-    assert.deepEqual(balance, '0.0000 SYS')
+    assert.deepEqual(balance, '0.0000 EOS')
     let tokenBalanceContractAfter;
     let tokenBalanceSellerAfter;
     try {
@@ -230,7 +230,7 @@ describe('Successful sales functionality', () => {
     }
     const { balance: balanceContractAfter } = tokenBalanceContractAfter.rows[0];
     const { balance: balanceSellerAfter } = tokenBalanceSellerAfter.rows[0];    
-    assert.deepEqual(balanceContractAfter, '0.0000 SYS')
+    assert.deepEqual(balanceContractAfter, '0.0000 EOS')
     assert.deepEqual(parseFloat(balanceSellerAfter) - parseFloat(balanceSellerBefore), 10.0000)    
   })
 });

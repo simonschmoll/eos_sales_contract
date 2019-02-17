@@ -40,7 +40,7 @@ exports.send = async (account, actionName, actor, permission, data, nonce = 'asd
   // console.dir(result);
 };
 
-function getTransferData (from, contractName, memo, quantity = '10.0000 SYS') {
+function getTransferData (from, contractName, memo, quantity = '10.0000 EOS') {
   return {
     from,
     to: contractName,

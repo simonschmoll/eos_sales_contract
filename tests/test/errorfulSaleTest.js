@@ -99,7 +99,7 @@ describe('Errorful sales functionality', () => {
       const wrongPriceData = {
         from: 'buyer', 
         to: contractName,
-        quantity: '1.0000 SYS',
+        quantity: '1.0000 EOS',
         memo: ''
       }
       await testService.send('eosio.token', 'transfer', 'buyer', 'active', wrongPriceData);

@@ -3,5 +3,5 @@
 pkill nodeos & pkill keosd
 rm -rf $EOS/eosio/data/*
 nohup keosd &>/dev/null &
-sh $EOS/salescon/scripts/nodeosStart.sh
+sh $EOS/eos_sales_contract/scripts/nodeosStart.sh
 

@@ -78,6 +78,26 @@ void salescon::itemreceived()
   setItemReceivedFlag(true, buyer);
 }
 
+// void salescon::pay()
+// {
+//   name buyer = getBuyer();
+//   auto price = getPrice();
+//   require_auth(buyer);
+//   assertItemSet();
+//   // Necessary asserts
+//   assertContractClosedStatus(false);
+//   assertRetractStatus(false);
+//   print("Paying");
+
+//   // If everything is valid pay
+//     action(
+//       permission_level{buyer, "active"_n},
+//       name("eosio.token"),
+//       "transfer"_n,
+//       std::make_tuple(buyer, get_self(), price, std::string("")))
+//     .send();
+// }
+
 /**
  * transfer
  * @params { name from, name to, asset quantity, string memo }, same parameters as from the eosio.token transfer function
@@ -95,6 +115,7 @@ void salescon::transfer(name from, name to, asset quantity, string memo)
 
   // Necessary asserts
   assertContractClosedStatus(false);
+  assertItemSet();
   assertRetractStatus(false);
   assertPriceEqualsValue(quantity.amount);
   eosio_assert(from == buyer, "Transfer must come from buyer");
@@ -117,7 +138,6 @@ void salescon::transfer(name from, name to, asset quantity, string memo)
  */
 void salescon::withdraw(name to)
 {
-  assertItemReceived();
   assertContractClosedStatus(false);
   auto config = getConfig();
   if (config.buyerIsPaidBack)
@@ -127,6 +147,9 @@ void salescon::withdraw(name to)
   else
   {
     require_auth(getSeller());
+  }
+  if (getConfig().contractRetracted == false) {
+    assertItemReceived();   
   }
   require_auth(to);
   auto price = getPrice();
@@ -344,7 +367,7 @@ void salescon::assertInitialized()
 void salescon::assertItemSet()
 {
   auto config = getConfig();
-  eosio_assert(config.itemSet == true, "assertItemSet: Item was not marked as received");
+  eosio_assert(config.itemSet == true, "assertItemSet: Item was not marked as set");
 }
 
 void salescon::assertItemReceived()

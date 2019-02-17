@@ -1,6 +1,6 @@
 #include <eosiolib/eosio.hpp>
 #include <eosiolib/asset.hpp>
-#define EOS_SYMBOL symbol("SYS", 4)
+#define EOS_SYMBOL symbol("EOS", 4)
 
 namespace eosio {
   using std::string;
@@ -30,6 +30,9 @@ namespace eosio {
       
       [[eosio::action]]
       void changeseller(name newSeller);
+      
+      // [[eosio::action]]
+      // void pay();
 
       struct [[eosio::table]] agreestruct {
         uint64_t key;

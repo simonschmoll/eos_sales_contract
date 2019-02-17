@@ -1,10 +1,10 @@
 #!/bin/bash
-cd ../../ && EOS=$(pwd) && cd eos_sales_contract/scripts
+cd ../ && EOS=$(pwd) && cd scripts/
 
-. $EOS/eos_sales_contract/scripts/restartChain.sh
-# . $EOS/eos_sales_contract/scripts/compile.sh
+. $EOS/scripts/restartChain.sh
+# . $EOS/scripts/compile.sh
 sleep 1.5s
-. $EOS/eos_sales_contract/scripts/accounts.sh
+. $EOS/scripts/accounts.sh
 sleep 0.5s
-. $EOS/eos_sales_contract/scripts/token_setup.sh
+. $EOS/scripts/token_setup.sh
 echo Finished

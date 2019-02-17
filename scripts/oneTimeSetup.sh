@@ -1,0 +1,15 @@
+#!/bin/bash
+
+chmod 700 accounts.sh
+chmod 700 compile.sh
+chmod 700 contractSetup.sh
+chmod 700 deployContract.sh
+chmod 700 initNewChainWithParams.sh
+chmod 700 nodeosStart.sh
+chmod 700 restartChain.sh
+chmod 700 tokenSetup.sh
+
+nohup keosd &>/dev/null &
+cleos wallet create -n bbb --file pw.txt
+# pw=$(sed -e 's/.*"\(.*\)".*/\1/' pw.txt)
+cleos wallet import -n bbb --private-key 5K8ghcBf9TpPAWdxHDUejqcxBWrQAzkj5D5FWHe13nmNJmWhH9k

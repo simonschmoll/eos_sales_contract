@@ -1,4 +1,5 @@
 *.log
-
+eosio
 .vscode
 node_modules
+pw.txt

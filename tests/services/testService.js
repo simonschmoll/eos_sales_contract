@@ -88,7 +88,7 @@ exports.beforeEach = async() => {
       try {
         await exports.send(contractName, 'init', 'seller', 'active', initData);
       } catch(error) {
-        console.log(error);
+        console.log('Error in init of contract:', error);
         reject();
       }
       resolve();

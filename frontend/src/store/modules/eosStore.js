@@ -38,7 +38,7 @@ export default {
 
     async loadData({ state, commit }) {
       console.log('Loading InitialData');
-      // deployContract.deployContract();
+      deployContract.deployContract();
       state.contractInstance = getRpc;
       const data = await eosUtil.getContractData();
       commit('loadData', data);

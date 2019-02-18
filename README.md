@@ -18,7 +18,7 @@ If you are using Windows you can get started here (https://medium.com/@blockgeni
 You need to have npm installed to work with this implementation.  
 It is recommended to use a node version manager such as nvm  (https://github.com/creationix/nvm) to install npm
 
-### 3. Eosio, keosd and nodeos
+### 3. Eosio, keosd, cleos and nodeos
 Please follow the steps 1.1 - 1.5 of the tutorials from the developer portal of EOS and install eosio, keosd and nodeos. Link: https://developers.eos.io/eosio-home/docs/introduction  
 **Do not create the default wallet and test accounts from step 1.6 and 1.7 as they will be created automatically in the next step**
 

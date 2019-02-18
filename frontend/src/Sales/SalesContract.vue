@@ -75,7 +75,7 @@
               <button class="buttonSeller buttonSubmit" @click="sendItem()">Submit</button>
             </td>
             <td class="tdAction">
-              <button class="buttonSeller" @click="withdraw(getAgreement)">Withdraw</button>
+              <button class="buttonSeller" @click="withdraw()">Withdraw</button>
             </td>
             <td class="tdAction">
               <button class="buttonRetract" @click="retractSeller()">Retract</button>
@@ -123,9 +123,6 @@
         </table>
       </div>
     </div>
-    <footer>
-      <p>Your current account from Metamask: {{}}</p>
-    </footer>
   </div>
 </template>
 
@@ -149,15 +146,10 @@ export default {
       getBalance: 'getBalance',
     }),
     contract() {
-      // console.log(
-      //   'Returning contract instance',
-      //   this.$store.state.eosModule.contractState,
-      // );
       return this.$store.state.eosModule.contractState;
     },
   },
   methods: {
-    // ...mapActions('eosModule', ['setItem']),
     sendItem() {
       const name = this.itemName;
       const price = this.itemPrice.toString();
@@ -172,13 +164,9 @@ export default {
       console.log('User wants to pay item (SalesContract)', price);
       this.$store.dispatch('pay', price);
     },
-    withdraw(agreement) {
+    withdraw() {
       console.log('Seller wants to withdraw money');
-      // if (agreement.sellerRetract && (agreement.buyerRetract || agreement.intermediatorRetract)) {
-      //   this.$store.dispatch('withdrawAfterDisputeSeller');
-      // } else {
       this.$store.dispatch('withdraw');
-      // }
     },
     withdrawAfterDisputeBuyer() {
       console.log('Buyer wants to withdraw money after dispute');
@@ -294,8 +282,5 @@ button {
 .account {
   margin: 20px;
 }
-/* .actionTable {
-  width: 400px;
-  height: 200px;
-} */
+
 </style>

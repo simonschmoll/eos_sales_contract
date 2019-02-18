@@ -1,21 +1,8 @@
-// import getEos from './getEos';
 import eos from './eos';
 import getRpc from './getEos';
 
 async function send(account, actionName, data, wallet) {
-  // await eos.terminateWallet();
-
-  // console.log('wallet is', wallet);
-
-  // await wallet.connect();
-  // await wallet.login('buyer');
-  // // eslint-disable-next-line
-  // await wallet.provider.login("buyer");
-
   console.log('Wallet in Send: ', wallet);
-  // console.log('Wallet permission ', eos.wallet.auth.permission);
-  // console.log('Wallet accountname: ', eos.wallet.auth.accountName);
-  // console.log('Wallet rpc: ', eos.wallet.ctx.eosRpc);
   if (wallet.authenticated === false) {
     console.log('Need to login again from Send function');
 
@@ -43,14 +30,6 @@ async function send(account, actionName, data, wallet) {
       blocksBehind: 3,
       expireSeconds: 60,
     });
-  // .then((result) => {
-  //   console.log('Transaction success!', result);
-  //   return result;
-  // })
-  // .catch((error) => {
-  //   console.error('Transaction error :(', error);
-  //   throw error;
-  // });
 }
 
 function getContractName() {
@@ -58,7 +37,7 @@ function getContractName() {
 }
 
 async function setItem(item) {
-  console.log('In Set Item');
+  console.log('In Set Item', item);
   const wallet = await eos.getSellerWallet();
   console.log('Wallet in setItem', wallet);
 
@@ -81,34 +60,34 @@ const changeSeller = async newSeller => send(getContractName(), 'changeseller', 
 
 const retractSeller = async (from) => {
   const wallet = await eos.getSellerWallet();
-  send(getContractName(), 'retract', { retractor: from }, wallet);
+  return send(getContractName(), 'retract', { retractor: from }, wallet);
 };
 const retractIntermed = async (from) => {
   const wallet = await eos.getIntermedWallet();
-  send(getContractName(), 'retract', { retractor: from }, wallet);
+  return send(getContractName(), 'retract', { retractor: from }, wallet);
 };
 const retractBuyer = async (from) => {
   const wallet = await eos.getBuyerWallet();
-  send(getContractName(), 'retract', { retractor: from }, wallet);
+  return send(getContractName(), 'retract', { retractor: from }, wallet);
 };
 
 const itemReceived = async () => {
   const wallet = await eos.getBuyerWallet();
-  send(getContractName(), 'itemreceived', {}, wallet);
+  return send(getContractName(), 'itemreceived', {}, wallet);
 };
 
 const withdrawBuyer = async (account) => {
   const wallet = await eos.getBuyerWallet();
   console.log('Withdraw buyer wallet', wallet);
 
-  send(getContractName(), 'withdraw', { to: account.toString() }, wallet);
+  return send(getContractName(), 'withdraw', { to: account.toString() }, wallet);
 };
 
 const withdrawSeller = async (account) => {
   const wallet = await eos.getSellerWallet();
   console.log('Withdraw wallet', wallet);
 
-  send(getContractName(), 'withdraw', { to: account.toString() }, wallet);
+  return send(getContractName(), 'withdraw', { to: account.toString() }, wallet);
 };
 
 const getRowsSaleCon = async (table) => {
@@ -161,69 +140,7 @@ const getContractData = async () => {
   });
 };
 
-
-// async function itemReceived(contractInstance) {
-//   console.log('Default account in item received', window.web3.eth.defaultAccount);
-//   return contractInstance.methods.itemReceived()
-//     .send({ from: window.web3.eth.defaultAccount });
-// }
-
-// async function payItem(contractInstance, price) {
-//   console.log('Paying called in webutil', price);
-//   return contractInstance.methods.payItem()
-//     .send({ from: window.web3.eth.defaultAccount, value: price });
-// }
-
-// async function withdraw(contractInstance) {
-//   console.log('Withdraw called in webutil');
-//   return contractInstance.methods.withdraw()
-//     .send({ from: window.web3.eth.defaultAccount });
-// }
-
-// async function withdrawAfterDisputeBuyer(contractInstance) {
-//   console.log('Withdraw after dispute called in webutil by buyer');
-//   return contractInstance.methods.withdrawAfterRetractionByBuyer()
-//     .send({ from: window.web3.eth.defaultAccount });
-// }
-
-// async function withdrawAfterDisputeSeller(contractInstance) {
-//   console.log('Withdraw after dispute called in webutil by seller');
-//   return contractInstance.methods.withdrawAfterRetractionBySeller()
-//     .send({ from: window.web3.eth.defaultAccount });
-// }
-
-// async function retractContract(contractInstance) {
-//   console.log('Withdraw called in webutil');
-//   return contractInstance.methods.retractContract()
-//     .send({ from: window.web3.eth.defaultAccount });
-// }
-
-// async function getAgreement(contract) {
-//   console.log('getAgreement called in web3util');
-//   return contract.methods.getAgreement().call();
-// }
-
-// async function getBalance(contract) {
-//   console.log('getAgreement called in web3util');
-//   return contract.methods.getContractBalance().call();
-// }
-
-
-// function watchEvents(contractInstance) {
-//   contractInstance.getPastEvents('SetItem', {
-//     fromBlock: 0,
-//     toBlock: 'latest',
-//   })
-//     .then((events) => {
-//       console.log(events);
-//     });
-// }
-
 export default {
-  // getAccount,
-  // deployContract,
-  // loadContractData,
-  // loadContract,
   setItem,
   send,
   withdrawBuyer,
@@ -236,13 +153,4 @@ export default {
   itemReceived,
   getRowsSaleCon,
   getContractData,
-  // itemReceived,
-  // loadExistingContract,
-  // payItem,
-  // withdraw,
-  // getAgreement,
-  // retractContract,
-  // getBalance,
-  // withdrawAfterDisputeBuyer,
-  // withdrawAfterDisputeSeller,
 };

@@ -1,8 +1,7 @@
 import eosUtil from '../../util/eosUtil';
 import getRpc from '../../util/getEos';
-import deployContract from '../../util/deployContract';
-// import deploy from '../../util/deployContract';
 
+/* eslint-disable */
 export default {
   state: {
     contractInstance: null,
@@ -44,55 +43,64 @@ export default {
       commit('loadData', data);
     },
     async setItem({ commit }, { name, price }) {
-      console.log('Set Item mutation called');
-      await eosUtil.setItem({ itemName: name, itemPrice: price });
+      console.log('Set Item mutation called', price);
+      console.log('Price index', (price.indexOf('.') > -1));
+      console.log('decimal places', (price + '.').split('.')[1].length )
+      const isDecimal = price.indexOf('.');
+      const decimalLength = (price + '.').split('.')[1].length;
+      if(isDecimal > -1 && (decimalLength > 4)) { 
+        window.alert('Price must not be smaller than 5 decimal places')
+        throw new Error('Price must not be smaller than 5 decimal places')
+      } else if((isDecimal > -1 && (decimalLength <= 4))){
+        let amountZeros = 4-decimalLength;
+        while (amountZeros > 0) {
+          price = price + '0';
+          amountZeros--;
+        } 
+      } else if (isDecimal <= -1) {
+        price = price + '.0000';
+      }
+      console.log('The price is', price);  
+      await eosUtil.setItem({ itemName: name, itemPrice: (price + ' EOS') })
+        .catch(error => window.alert(`${error.toString()}`));
     },
 
     async pay({ state, commit }, price) {
       console.log('Pay in store called', price);
 
-      await eosUtil.pay(price);
+      await eosUtil.pay(price)
+        .catch(error => window.alert(`${error.toString()}`));
     },
 
     async receivedItem({ commit }) {
-      await eosUtil.itemReceived();
-    },
-    async deploy({ commit, dispatch }, { seller, buyer, intermediator }) {
-      // console.log('mutation deploy called in store', seller, buyer, intermediator);
-      // eosUtil.deployContract(seller, buyer, intermediator)
-      //   .then((instance) => {
-      //     commit('saveContract', instance);
-      //     dispatch('loadData');
-      //   });
+      await eosUtil.itemReceived()
+        .catch(error => window.alert(`${error.toString()}`));
     },
     async retractBuyer({ state }) {
       console.log('Mutation retractBuyer');
-      eosUtil.retractBuyer(state.contractState.buyer);
+      eosUtil.retractBuyer(state.contractState.buyer)
+        .catch(error => window.alert(`${error.toString()}`));
     },
     async retractSeller({ state }) {
       console.log('Mutation retractSeller');
 
-      eosUtil.retractSeller(state.contractState.seller);
+      eosUtil.retractSeller(state.contractState.seller)
+        .catch(error => window.alert(`${error.toString()}`));
     },
     async retractIntermed({ state }) {
       console.log('Mutation retractIntermed');
-      eosUtil.retractIntermed(state.contractState.intermediator);
+      eosUtil.retractIntermed(state.contractState.intermediator)
+        .catch(error => window.alert(`${error.toString()}`));
     },
     async withdraw({ state }) {
       console.log('State is', state);
-      eosUtil.withdrawSeller(state.contractState.seller);
+      eosUtil.withdrawSeller(state.contractState.seller)
+        .catch(error => window.alert(`${error.toString()}`));
     },
     async withdrawAfterDisputeBuyer({ state }) {
-      eosUtil.withdrawBuyer(state.contractState.buyer);
+      eosUtil.withdrawBuyer(state.contractState.buyer)
+        .catch(error => window.alert(`${error.toString()}`));
     },
-    // async withdrawAfterDisputeSeller({ dispatch, state }) {
-    //   // eosUtil.withdrawAfterDisputeSeller(state.contractInstance)
-    //   //   .then(() => dispatch('loadContractData'));
-    // },
-    // async getAgreement({ commit, state }) {
-    //   eosUtil.getAgreement(state.contractInstance)
-    //     .then((result) => { commit('updateAgreement', result); });
-    // },
   },
   getters: {
     getItem: state => state.contractState.item,

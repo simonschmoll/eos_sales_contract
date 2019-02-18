@@ -10,6 +10,6 @@ chmod 700 restartChain.sh
 chmod 700 tokenSetup.sh
 
 nohup keosd &>/dev/null &
-cleos wallet create -n bbb --file pw.txt
+cleos wallet create --file pw.txt
 # pw=$(sed -e 's/.*"\(.*\)".*/\1/' pw.txt)
-cleos wallet import -n bbb --private-key 5K8ghcBf9TpPAWdxHDUejqcxBWrQAzkj5D5FWHe13nmNJmWhH9k
+cleos wallet import --private-key 5K8ghcBf9TpPAWdxHDUejqcxBWrQAzkj5D5FWHe13nmNJmWhH9k

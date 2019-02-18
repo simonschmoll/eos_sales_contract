@@ -1,5 +1,4 @@
 #!/bin/bash
-
 nodeos -e -p eosio \
 --plugin eosio::producer_plugin \
 --plugin eosio::chain_api_plugin \

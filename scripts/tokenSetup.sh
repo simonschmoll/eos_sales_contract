@@ -5,7 +5,7 @@ cleos create account eosio eosio.token $PUBLICKEY
 cleos create account eosio eosio.stake $PUBLICKEY
 cleos create account eosio eosio.ramfee $PUBLICKEY
 
-cleos set contract eosio.token $EOS/contracts/eosio.token/ -p eosio.token
+cleos set contract eosio.token $EOS/contracts/eosio.token -p eosio.token
 cleos push action eosio.token create '[ "eosio", "1000000000.0000 EOS"]' -p eosio.token
 
 cleos push action eosio.token issue '["seller", "1000.0000 EOS", "memo"]' -p eosio@active 

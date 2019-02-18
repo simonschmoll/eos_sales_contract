@@ -12,7 +12,7 @@ const api = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), te
 
 const bike = {
   itemName: 'bike', 
-  itemPrice: 100000
+  itemPrice: '10.0000 EOS'
 }
 const initData = {
   seller: 'seller',

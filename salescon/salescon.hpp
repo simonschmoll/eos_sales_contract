@@ -14,7 +14,7 @@ namespace eosio {
       void init(name seller, name buyer, name intermediator);
 
       [[eosio::action]]
-      void setitem(std::string itemName, uint64_t itemPrice);
+      void setitem(std::string itemName, asset itemPrice);
 
       [[eosio::action]]
       void itemreceived();
@@ -30,9 +30,6 @@ namespace eosio {
       
       [[eosio::action]]
       void changeseller(name newSeller);
-      
-      // [[eosio::action]]
-      // void pay();
 
       struct [[eosio::table]] agreestruct {
         uint64_t key;

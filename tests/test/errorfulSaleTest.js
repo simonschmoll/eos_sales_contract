@@ -36,7 +36,7 @@ describe('Errorful sales functionality', () => {
       // Then
       await testService.setItem('seller', {
         itemName: "bike2", 
-        itemPrice: 100000
+        itemPrice: '10.0000 EOS'
       });
       assert.fail();
     } catch (error) {

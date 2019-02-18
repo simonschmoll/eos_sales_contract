@@ -47,18 +47,22 @@ void salescon::init(name seller, name buyer, name intermediator)
  * @actions sets the item in the multi index table { item }
  * @eos action
  */
-void salescon::setitem(std::string itemName, uint64_t itemPrice)
+void salescon::setitem(std::string itemName, asset itemPrice)
 {
   name seller = getSeller();
   require_auth(seller);
   assertInitialized();
-  auto quantity = asset(itemPrice, EOS_SYMBOL);
+  eosio_assert(itemPrice.symbol.is_valid(), "invalid quantity");
+  eosio_assert(itemPrice.amount > 0, "only positive quantities can be transferred");
+  eosio_assert(itemPrice.symbol == EOS_SYMBOL, "only transfer from EOS tokens possible");
+  // This is necessary to ensure that the amount is in the right decimal places 
+
   auto iterator = _item.find(0);
   eosio_assert(iterator == _item.end(), "Item already set");
   _item.emplace(seller, [&](auto &row) {
     row.key = 0;
     row.itemName = itemName;
-    row.itemPrice = quantity;
+    row.itemPrice = itemPrice;
   });
   setItemIsSetFlag(true, seller);
 }
@@ -77,26 +81,6 @@ void salescon::itemreceived()
   require_auth(buyer);
   setItemReceivedFlag(true, buyer);
 }
-
-// void salescon::pay()
-// {
-//   name buyer = getBuyer();
-//   auto price = getPrice();
-//   require_auth(buyer);
-//   assertItemSet();
-//   // Necessary asserts
-//   assertContractClosedStatus(false);
-//   assertRetractStatus(false);
-//   print("Paying");
-
-//   // If everything is valid pay
-//     action(
-//       permission_level{buyer, "active"_n},
-//       name("eosio.token"),
-//       "transfer"_n,
-//       std::make_tuple(buyer, get_self(), price, std::string("")))
-//     .send();
-// }
 
 /**
  * transfer

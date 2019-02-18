@@ -1,5 +1,10 @@
 # Eos Sales Contract
 
+**DISCLAIMER: This smart contract setup is not intended for production use, rather as a experimental setup 
+to facilitate the understanding of EOS and the underlying principles. DO NOT USE this code in production or deploy it 
+to the main network, as any EOS locked into the contract might be exposed to security risks. The code was not audited and 
+should only be used for educational purposes.**
+
 ## Local setup
 
 ## Prerequisites:
@@ -38,11 +43,35 @@ From the root directory (eos_sales_contract) run:
 The complete script should run without problems (no error messages), otherwise there will be problems later on!  
 (**Remark: This command will install all dependencies and it will run a setup script which makes other scripts executable, these necessary for the tests, furthermore it will create a default wallet. The password for the default wallet will be stored in scripts/pw.txt you only need it if you want to unlock it manually)** 
 ## Start the Tests
-**Only after all previous steps (1-4 prerequisites and npm install)**  
+**Only after all previous steps (prerequisites 1-4 and npm install)**  
 From the root directory (eos_sales_contract) run:  
 `npm test`
 
 ## Start the Frontend
-**Only after all previous steps (1-4 prerequisites and npm install)**  
+
+**Only after all previous steps (prerequisites 1-4 and npm install)**  
 From the root directory (eos_sales_contract) run:  
 `npm start`  
+This will initialize a new eos chain (nodeos) and delete any previous data. 
+The contract is now ready for interaction. But before, it is necessary to install scatter.
+
+### Install Scatter  
+
+To interact with the smart contract on the EOS Blockchain download the wallet provider Scatter (https://get-scatter.com/). Please follow the next steps:
+- Start Scatter after downloading it
+- Create a new wallet
+- Import the private key for interaction (private key: 5K8ghcBf9TpPAWdxHDUejqcxBWrQAzkj5D5FWHe13nmNJmWhH9k)
+- After importing the private key scatter should show you 5 accounts (seller, buyer, intermed, salescon, random)
+
+Now go to http://localhost:8082 and you can interact with the contract.
+
+### Intended steps for interaction: 
+- Set Item
+- Pay Item
+- Received Item
+- Withdraw
+
+Everytime a button is clicked, Scatter will ask you for the permission.
+
+
+

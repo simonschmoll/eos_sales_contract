@@ -10,8 +10,10 @@
 # chmod 700 tokenSetup.sh
 
 nohup keosd &>/dev/null &
-cleos wallet create --file pw.txt
-# pw=$(sed -e 's/.*"\(.*\)".*/\1/' pw.txt)
-cleos wallet import --private-key 5K8ghcBf9TpPAWdxHDUejqcxBWrQAzkj5D5FWHe13nmNJmWhH9k
-cleos wallet import --private-key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
-cleos wallet import --private-key 5KFcKixjbRQsfq9cQ8YXsV6GHEHqaiRrfGLevnM9AqUw5L1PmKC
+if [ ! -f pw.txt ]; then
+  echo "File not found"
+  cleos wallet create --file pw.txt
+  cleos wallet import --private-key 5K8ghcBf9TpPAWdxHDUejqcxBWrQAzkj5D5FWHe13nmNJmWhH9k
+  cleos wallet import --private-key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
+  cleos wallet import --private-key 5KFcKixjbRQsfq9cQ8YXsV6GHEHqaiRrfGLevnM9AqUw5L1PmKC
+fi

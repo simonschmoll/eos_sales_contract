@@ -6,7 +6,7 @@ to the main network, as any EOS locked into the contract might be exposed to sec
 should only be used for educational purposes.**
 
 ## Local setup
-
+Tested on MacOs Mojave (10.14.2) and Linux Mint 18.3 Sylvia
 ## Prerequisites:
 
 ### 1. Operating System
@@ -19,7 +19,7 @@ You need to have npm installed to work with this implementation.
 It is recommended to use a node version manager such as nvm  (https://github.com/creationix/nvm) to install npm
 
 ### 3. Eosio, keosd, cleos and nodeos
-Please follow step 1.2 of the developer tutorial of EOS and install eosio, keosd, cleos and nodeos. Link: https://developers.eos.io/eosio-home/docs/introduction  
+Please follow step 1.2 of the developer tutorial of EOS and install eosio, keosd, cleos and nodeos. Link: https://developers.eos.io/eosio-home/docs/setting-up-your-environment  
 **Do not create any other configurations such as the default wallet and test accounts from step 1.6 and 1.7 as they will be created automatically in the next step**
 
 ### 4. Clone this repository into a new folder/directory

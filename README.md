@@ -19,8 +19,10 @@ You need to have npm installed to work with this implementation.
 It is recommended to use a node version manager such as nvm  (https://github.com/creationix/nvm) to install npm
 
 ### 3. Eosio, keosd, cleos and nodeos
-Please follow the steps 1.1 - 1.5 of the tutorials from the developer portal of EOS and install eosio, keosd and nodeos. Link: https://developers.eos.io/eosio-home/docs/introduction  
-**Do not create the default wallet and test accounts from step 1.6 and 1.7 as they will be created automatically in the next step**
+Please follow step 1.2 of the developer tutorial of EOS and install eosio, keosd, cleos and nodeos. Link: https://developers.eos.io/eosio-home/docs/introduction  
+**Do not create any other configurations such as the default wallet and test accounts from step 1.6 and 1.7 as they will be created automatically in the next step**
+
+### 4. Clone this repository into a new folder/directory
 
 <!-- ### 4. Script setup
 Unfortunately, there is also some bash configs which need to be established. As there is currently no local test suit available for EOS. The instructions are as follows:
@@ -37,19 +39,19 @@ Unfortunately, there is also some bash configs which need to be established. As 
 `./oneTimeSetup.sh`  
  -->
 
-### 4. Install all necessary dependencies and run custom script
-From the root directory (eos_sales_contract) run: 
+### 5. Install all necessary dependencies through running the install script
+From the root directory (eos_sales_contract) open a terminal and run: 
 `npm install` 
-The complete script should run without problems (no error messages), otherwise there will be problems later on!  
+The complete script should run without problems (no error messages), otherwise there will be problems later on! (yellow output is normal, as this just gives you the hint that the transactions are only executed locally)
 (**Remark: This command will install all dependencies and it will run a setup script which makes other scripts executable, these necessary for the tests, furthermore it will create a default wallet. The password for the default wallet will be stored in scripts/pw.txt you only need it if you want to unlock it manually)** 
 ## Start the Tests
-**Only after all previous steps (prerequisites 1-4 and npm install)**  
+**Only after all previous steps (prerequisites 1-5 and npm install)**  
 From the root directory (eos_sales_contract) run:  
 `npm test`
 
 ## Start the Frontend
 
-**Only after all previous steps (prerequisites 1-4 and npm install)**  
+**Only after all previous steps (prerequisites 1-5 and npm install)**  
 From the root directory (eos_sales_contract) run:  
 `npm start`  
 This will initialize a new eos chain (nodeos) and delete any previous data. 
@@ -62,8 +64,18 @@ To interact with the smart contract on the EOS Blockchain download the wallet pr
 - Create a new wallet
 - Import the private key for interaction (private key: 5K8ghcBf9TpPAWdxHDUejqcxBWrQAzkj5D5FWHe13nmNJmWhH9k)
 - After importing the private key scatter should show you 5 accounts (seller, buyer, intermed, salescon, random)
+- Go into the settings of Scatter and add a new network (this is under the section "danger zone")
+  - Delete all currently existing networks
+  - Afterwards add a new network (Hint: After deletion of the networks it might be necessary to leave the options and come back again, as there are some 
+  refreshing problems)
+  - Add the following configs for the network: 
+    - Name: Testnet
+    - Host: 127.0.0.1
+    - Protocol: http
+    - Port: 8888
+    - chainId: cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f
 
-Now go to http://localhost:8082 and you can interact with the contract.
+Now open http://localhost:8082 and you can interact with the contract.
 
 ### Intended steps for interaction: 
 - Set Item

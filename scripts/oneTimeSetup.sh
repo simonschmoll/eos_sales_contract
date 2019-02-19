@@ -1,14 +1,5 @@
 #!/bin/bash
 
-# chmod 700 accounts.sh
-# chmod 700 compile.sh
-# chmod 700 contractSetup.sh
-# chmod 700 deployContract.sh
-# chmod 700 initNewChainWithParams.sh
-# chmod 700 nodeosStart.sh
-# chmod 700 restartChain.sh
-# chmod 700 tokenSetup.sh
-
 nohup keosd &>/dev/null &
 
 if [ ! -f pw.txt ]; then

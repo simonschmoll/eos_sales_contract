@@ -2,6 +2,7 @@ const testService = require('../services/testService');
 const { assert } = require('chai');
 
 beforeEach(() =>  testService.beforeEach());
+// before(() => testService.before());
 
 /***********************************************************************************
  sales functionality
@@ -20,7 +21,7 @@ describe('Errorful sales functionality', () => {
       assert.fail();
     } catch (error) {
       // Then
-      assert.deepEqual('missing authority of seller', error.json.error.details[0].message);
+      assert.deepEqual('Error: missing authority of seller', error.toString());
     }
   }) 
 
@@ -41,9 +42,91 @@ describe('Errorful sales functionality', () => {
       assert.fail();
     } catch (error) {
        // Then
-      assert.deepEqual('assertion failure with message: Item already set', error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: Item already set', error.toString());
     }
   });
+
+  it('Item is set without itemName', async () => {
+    // When
+    try {
+      await testService.setItem('seller', {
+        itemPrice: '10.0000 EOS'
+      });
+      assert.fail();
+    } catch (error) {
+      // Then
+      assert.deepEqual('Error: missing setitem.itemName (type=string)', error.toString());
+    }
+  }) 
+  
+  it('Item is set with empty itemName', async () => {
+    // When
+    try {
+      await testService.setItem('seller', {
+        itemName: '',
+        itemPrice: '10.0000 EOS'
+      });
+      assert.fail();
+    } catch (error) {
+      // Then
+      assert.deepEqual('Error: assertion failure with message: Item name must not be null', error.toString());
+    }
+  }) 
+
+  it('Item is set without itemPrice', async () => {
+    // When
+    try {
+      await testService.setItem('seller', {
+        itemName: "bike2",
+      });
+      assert.fail();
+    } catch (error) {
+      // Then
+      assert.deepEqual('Error: missing setitem.itemPrice (type=asset)', error.toString());
+    }
+  }) 
+
+  it('Item is set with wrong format of itemPrice (without EOS)', async () => {
+    // When
+    try {
+      await testService.setItem('seller', {
+        itemName: "bike2",
+        itemPrice: '10.0000'
+      });
+      assert.fail();
+    } catch (error) {
+      // Then
+      assert.deepEqual('Error: assertion failure with message: Invalid quantity', error.toString());
+    }
+  }) 
+
+  it('Item is set with wrong format of itemPrice (wrong decimal places)', async () => {
+    // When
+    try {
+      await testService.setItem('seller', {
+        itemName: "bike2",
+        itemPrice: '10.000 EOS'
+      });
+      assert.fail();
+    } catch (error) {
+      // Then
+      assert.deepEqual('Error: assertion failure with message: Asset must be of type EOS and with exact 4 decimal places', error.toString());
+    }
+  }) 
+
+  it('Item is set with wrong format of itemPrice (no decimal places)', async () => {
+    // When
+    try {
+      await testService.setItem('seller', {
+        itemName: "bike2",
+        itemPrice: '10 EOS'
+      });
+      assert.fail();
+    } catch (error) {
+      // Then
+      assert.deepEqual('Error: assertion failure with message: Asset must be of type EOS and with exact 4 decimal places', error.toString());
+    }
+  }) 
 
 /***********************************************************************************
  payItem tests
@@ -61,7 +144,7 @@ describe('Errorful sales functionality', () => {
       assert.fail();
     } catch (error) {
       // Then
-      assert.deepEqual('assertion failure with message: Transfer must come from buyer', error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: Transfer must come from buyer', error.toString());
     }
   }) 
 
@@ -82,7 +165,7 @@ describe('Errorful sales functionality', () => {
       await testService.pay('buyer')
       assert.fail();
     } catch (error) {
-      assert.deepEqual('assertion failure with message: Contract is closed', error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: Contract is closed', error.toString());
     }
   }) 
 
@@ -105,7 +188,7 @@ describe('Errorful sales functionality', () => {
       await testService.send('eosio.token', 'transfer', 'buyer', 'active', wrongPriceData);
       assert.fail();
     } catch (error) {
-      assert.deepEqual('assertion failure with message: assertPriceEqualsValue: Transfer value must be equal to price', error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: assertPriceEqualsValue: Transfer value must be equal to price', error.toString());
     }
   }) 
 
@@ -127,7 +210,7 @@ describe('Errorful sales functionality', () => {
       assert.fail();
     } catch (error) {
       // Then
-      assert.deepEqual('missing authority of buyer', error.json.error.details[0].message);
+      assert.deepEqual('Error: missing authority of buyer', error.toString());
     }
   })
 
@@ -144,7 +227,7 @@ describe('Errorful sales functionality', () => {
       assert.fail();
     } catch (error) {
       // Then
-      assert.deepEqual('assertion failure with message: assertItemPaid: Item was not paid', error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: assertItemPaid: Item was not paid', error.toString());
     }
   })
 
@@ -167,7 +250,7 @@ describe('Errorful sales functionality', () => {
       assert.fail();
     } catch (error) {
       // Then
-      assert.deepEqual('missing authority of seller', error.json.error.details[0].message);
+      assert.deepEqual('Error: missing authority of seller', error.toString());
     }
   })
   
@@ -185,8 +268,8 @@ describe('Errorful sales functionality', () => {
       assert.fail();
     } catch (error) {
       // Then
-      assert.deepEqual('assertion failure with message: assertItemReceived: Item was not marked as received', 
-        error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: assertItemReceived: Item was not marked as received', 
+        error.toString());
     }
   })
 
@@ -207,8 +290,8 @@ describe('Errorful sales functionality', () => {
       assert.fail();
     } catch (error) {
       // Then
-      assert.deepEqual('assertion failure with message: Contract is closed', 
-        error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: Contract is closed', 
+        error.toString());
     }
   })
 
@@ -229,7 +312,7 @@ describe('Errorful sales functionality', () => {
       assert.fail();
     } catch (error) {
       // Then
-      assert.deepEqual('missing authority of buyer', error.json.error.details[0].message);
+      assert.deepEqual('Error: missing authority of buyer', error.toString());
     }
   })
 
@@ -250,7 +333,7 @@ describe('Errorful sales functionality', () => {
       assert.fail();
     } catch (error) {
       // Then
-      assert.deepEqual('missing authority of seller', error.json.error.details[0].message);
+      assert.deepEqual('Error: missing authority of seller', error.toString());
     }
   })
 });

@@ -23,7 +23,7 @@ describe('Errorful changing seller tests', () => {
         assert.fail()
       } catch (error) {
         // Then
-        assert.deepEqual('missing authority of seller', error.json.error.details[0].message);
+        assert.deepEqual('Error: missing authority of seller', error.toString());
       }
     })
   
@@ -46,7 +46,7 @@ describe('Errorful changing seller tests', () => {
         assert.fail();
       } catch (error) {
         // Then
-        assert.deepEqual('assertion failure with message: Contract must not be retracted', error.json.error.details[0].message);
+        assert.deepEqual('Error: assertion failure with message: Contract must not be retracted', error.toString());
       }
     });
 });

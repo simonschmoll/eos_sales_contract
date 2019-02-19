@@ -49,12 +49,14 @@ void salescon::init(name seller, name buyer, name intermediator)
  */
 void salescon::setitem(std::string itemName, asset itemPrice)
 {
+
   name seller = getSeller();
   require_auth(seller);
   assertInitialized();
-  eosio_assert(itemPrice.symbol.is_valid(), "invalid quantity");
-  eosio_assert(itemPrice.amount > 0, "only positive quantities can be transferred");
-  eosio_assert(itemPrice.symbol == EOS_SYMBOL, "only transfer from EOS tokens possible");
+  eosio_assert(itemName != "", "Item name must not be null");
+  eosio_assert(itemPrice.symbol.is_valid(), "Invalid quantity");
+  eosio_assert(itemPrice.amount > 0, "Only positive quantities can be transferred");
+  eosio_assert(itemPrice.symbol == EOS_SYMBOL, "Asset must be of type EOS and with exact 4 decimal places");
   // This is necessary to ensure that the amount is in the right decimal places 
 
   auto iterator = _item.find(0);
@@ -104,9 +106,9 @@ void salescon::transfer(name from, name to, asset quantity, string memo)
   assertPriceEqualsValue(quantity.amount);
   eosio_assert(from == buyer, "Transfer must come from buyer");
   eosio_assert(to == _self, "Contract was not the recipient");
-  eosio_assert(quantity.symbol.is_valid(), "invalid quantity");
-  eosio_assert(quantity.amount > 0, "only positive quantities can be transferred");
-  eosio_assert(quantity.symbol == EOS_SYMBOL, "only transfer from EOS tokens possible");
+  eosio_assert(quantity.symbol.is_valid(), "Invalid quantity");
+  eosio_assert(quantity.amount > 0, "Only positive quantities can be transferred");
+  eosio_assert(quantity.symbol == EOS_SYMBOL, "Only transfer from EOS token and exact 4 decimal places possible");
 
   // If everything is valid set item to paid
   itempaid(_self);
@@ -161,10 +163,10 @@ void salescon::retract(name retractor)
   auto agreement = getAgreement();
   if (retractor == buyer)
   {
-    eosio_assert(!agreement.sellerRetract, "can not retract, because seller already retracted");
+    eosio_assert(!agreement.sellerRetract, "Can not retract, because seller already retracted");
   }
   else if (retractor == seller){
-      eosio_assert(!agreement.buyerRetract, "can not retract, because buyer already retracted");
+      eosio_assert(!agreement.buyerRetract, "Can not retract, because buyer already retracted");
   } 
   require_auth(retractor);
   eosio_assert(retractor == buyer || retractor == seller || retractor == intermediator, "Caller does not have the permission to call this method");

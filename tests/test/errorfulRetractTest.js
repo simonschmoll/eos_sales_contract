@@ -23,7 +23,7 @@ describe('Errorful retracting contract tests', () => {
       assert.fail()
     } catch (error) {
       // Then
-      assert.deepEqual('assertion failure with message: Caller does not have the permission to call this method', error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: Caller does not have the permission to call this method', error.toString());
     }
   })
 
@@ -35,7 +35,7 @@ describe('Errorful retracting contract tests', () => {
       assert.fail()
     } catch (error) {
       // Then
-      assert.deepEqual('assertion failure with message: can not retract, because seller already retracted', error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: Can not retract, because seller already retracted', error.toString());
     }
   })
 
@@ -47,7 +47,7 @@ describe('Errorful retracting contract tests', () => {
       assert.fail()
     } catch (error) {
       // Then
-      assert.deepEqual('assertion failure with message: can not retract, because buyer already retracted', error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: Can not retract, because buyer already retracted', error.toString());
     }
   })
 
@@ -61,7 +61,7 @@ describe('Errorful retracting contract tests', () => {
       assert.fail()
     } catch (error) {
       // Then
-      assert.deepEqual('assertion failure with message: Contract is closed', error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: Contract is closed', error.toString());
     }
   })
 
@@ -76,7 +76,7 @@ describe('Errorful retracting contract tests', () => {
       assert.fail()
     } catch (error) {
       // Then
-      assert.deepEqual('assertion failure with message: Contract must not be retracted', error.json.error.details[0].message);
+      assert.deepEqual('Error: assertion failure with message: Contract must not be retracted', error.toString());
     }
   })
 })

@@ -18,26 +18,17 @@ If you are using Windows you can get started here (https://medium.com/@blockgeni
 You need to have npm installed to work with this implementation.  
 It is recommended to use a node version manager such as nvm  (https://github.com/creationix/nvm) to install npm
 
-### 3. Eosio, keosd, cleos and nodeos
+### 3. Keosd, cleos and nodeos
 Please follow step 1.2 of the developer tutorial of EOS and install eosio, keosd, cleos and nodeos. Link: https://developers.eos.io/eosio-home/docs/setting-up-your-environment  
+Versions:  
+- cleos: client Build version: d4ffb4eb
+- nodeos: v1.5.1
+- keosd: v1.5.1  
+Versions that differ from the aforementioned, can cause problems in the workflow. As there might be some breaking changes.  
+
 **Do not create any other configurations such as the default wallet and test accounts from step 1.6 and 1.7 as they will be created automatically in the next step**
 
 ### 4. Clone this repository into a new folder/directory
-
-<!-- ### 4. Script setup
-Unfortunately, there is also some bash configs which need to be established. As there is currently no local test suit available for EOS. The instructions are as follows:
-- Open a terminal and navigate into the scripts directory (from root this is: `cd scripts`)
-- Next run the command `chmod 700 oneTimeSetup.sh` (this will allow you to execute the setup script)
-- After this, type `./oneTimeSetup.sh` into the terminal (this will run the initialization script - every command must be executed in **scripts** directory)
-- There should be no warnings in the console after executing the script, if there are please try to fix the errors by troubleshooting. Otherwise, you are not able to run the contract locally. 
-
-(**Remark: This script will make other scripts executable which are necessary for the tests, furthermore it will create a default wallet)**   -->
-
-<!-- Quick command guide (from eos_contract_sales):  
-`cd scripts`  
-`chmod 700 oneTimeSetup.sh`  
-`./oneTimeSetup.sh`  
- -->
 
 ### 5. Install all necessary dependencies through running the install script
 From the root directory (eos_sales_contract) open a terminal and run: 

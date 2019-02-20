@@ -24,7 +24,6 @@ export default {
     };
   },
   created() {
-    console.log('Create web3 instance from SalesContract app');
     this.$store.dispatch('loadData');
     this.poll();
   },

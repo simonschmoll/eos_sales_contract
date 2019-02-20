@@ -1,5 +1,4 @@
 import eosUtil from '../../util/eosUtil';
-import getRpc from '../../util/getEos';
 
 /* eslint-disable */
 export default {
@@ -37,8 +36,6 @@ export default {
 
     async loadData({ state, commit }) {
       console.log('Loading InitialData');
-      // deployContract.deployContract();
-      state.contractInstance = getRpc;
       const data = await eosUtil.getContractData();
       commit('loadData', data);
     },

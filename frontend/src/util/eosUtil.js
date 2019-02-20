@@ -1,5 +1,5 @@
 import eos from './eos';
-import getRpc from './getEos';
+import rpcModule from './rpcModule';
 
 async function send(account, actionName, data, wallet) {
   console.log('Wallet in Send: ', wallet);
@@ -92,7 +92,7 @@ const withdrawSeller = async (account) => {
 
 const getRowsSaleCon = async (table) => {
   const contractName = getContractName();
-  return getRpc.rpc.get_table_rows({
+  return rpcModule.rpc.get_table_rows({
     json: true,
     code: contractName,
     scope: contractName,

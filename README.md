@@ -1,6 +1,6 @@
 # Eos Sales Contract
 
-**DISCLAIMER: This smart contract setup is not intended for production use, rather as a experimental setup 
+**DISCLAIMER: This smart contract setup is not intended for production use, rather as an experimental setup 
 to facilitate the understanding of EOS and the underlying principles. DO NOT USE this code in production or deploy it 
 to the main network, as any EOS locked into the contract might be exposed to security risks. The code was not audited and 
 should only be used for educational purposes.**
@@ -74,7 +74,7 @@ Now open http://localhost:8082 and you can interact with the contract.
 - Received Item
 - Withdraw
 
-Everytime a button is clicked, Scatter will ask you for the permission.
+Everytime a button is clicked, Scatter will ask you for permission.
 
 
 

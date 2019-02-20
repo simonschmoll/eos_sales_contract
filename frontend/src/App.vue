@@ -10,8 +10,7 @@
       </nav>
     </header>
     <main>
-      <router-view v-if="contractInstance" name="default"/>
-      <router-view v-else name="deploy"/>
+      <router-view name="default"/>
     </main>
   </div>
 </template>
@@ -37,12 +36,6 @@ export default {
       this.polling = setInterval(() => {
         this.$store.dispatch('pollContract');
       }, 3000);
-    },
-  },
-  computed: {
-    contractInstance() {
-      // console.log('Returning contractInstance', this.$store.state.contractInstance);
-      return this.$store.state.eosModule.contractInstance;
     },
   },
 };

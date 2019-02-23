@@ -7,12 +7,15 @@ before(() => testService.before());
 beforeEach(() =>  testService.beforeEach());
 
 /***********************************************************************************
- sales functionality
+ Sales functionality
 /**********************************************************************************/
+
 describe('Successful sales functionality', () => {
+
 /***********************************************************************************
- contract Correct initialized
+ Contract correct initialized
 /**********************************************************************************/
+
   it('Tables are initialized', async () => {
     // Then
     let rowsConfig;
@@ -42,6 +45,10 @@ describe('Successful sales functionality', () => {
     assert.deepEqual(agreement.intermediatorRetract, 0)
   })
 
+  /***********************************************************************************
+   setItem() test
+  /**********************************************************************************/
+
   it('Item is set by seller', async () => {
     // When
     try {
@@ -57,6 +64,10 @@ describe('Successful sales functionality', () => {
     assert.deepEqual(itemName, 'bike')
     assert.deepEqual(itemPrice, '10.0000 EOS')
   })
+
+  /***********************************************************************************
+   payItem() test
+  /**********************************************************************************/
 
   it('Item is paid by buyer', async () => {
     // When
@@ -94,6 +105,10 @@ describe('Successful sales functionality', () => {
     assert.deepEqual(parseFloat(balanceBuyerBefore) - parseFloat(balanceBuyerAfter), 10.0000)    
   })
 
+  /***********************************************************************************
+   itemReceived() test
+  /**********************************************************************************/
+
   it('item is received by buyer', async () => {
     // When
     try {
@@ -109,6 +124,10 @@ describe('Successful sales functionality', () => {
     // Then
     assert.deepEqual(itemReceived, 1)
   })
+
+  /***********************************************************************************
+   withdraw() test
+  /**********************************************************************************/
 
   it('Withdraw money by seller', async () => {
     // When
@@ -147,6 +166,10 @@ describe('Successful sales functionality', () => {
     assert.deepEqual(balanceContractAfter, '0.0000 EOS')
     assert.deepEqual(parseFloat(balanceSellerAfter) - parseFloat(balanceSellerBefore), 10.0000)    
   })
+
+  /***********************************************************************************
+   withdraw() after dispute test (buyer)
+  /**********************************************************************************/
 
   it('Withdraw money by buyer after dispute', async () => {
     // When
@@ -192,6 +215,10 @@ describe('Successful sales functionality', () => {
     assert.deepEqual(balanceContractAfter, '0.0000 EOS')
     assert.deepEqual(parseFloat(balanceBuyerAfter) - parseFloat(balanceBuyerBefore), 0)    
   })
+
+  /***********************************************************************************
+   withdraw() after dispute test (seller)
+  /**********************************************************************************/
 
   it('Withdraw money by seller after dispute', async () => {
     // When

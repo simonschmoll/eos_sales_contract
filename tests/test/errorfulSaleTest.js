@@ -235,7 +235,7 @@ describe('Errorful sales functionality', () => {
  withdraw tests
 /**********************************************************************************/
 
-  it('Money withdraw by other than seller', async () => {
+  it('Money withdraw by other than seller (normal flow)', async () => {
     // Given
     try {
       await testService.setItem('seller');
@@ -300,7 +300,6 @@ describe('Errorful sales functionality', () => {
     try {
       await testService.setItem('seller');
       await testService.pay('buyer');
-      await testService.itemReceived('buyer')
       await testService.retract('buyer');
       await testService.retract('intermed');
     } catch (error) {

@@ -61,7 +61,11 @@ describe('Successful retracting contract tests', () => {
       assert.deepEqual(intermediatorRetract, 1)
     })
 
-  it('Retract contract and check config, aggrement struct', async () => {
+/***********************************************************************************
+ retractContract() test (seller and intermediator)
+/**********************************************************************************/
+
+  it('Retract contract (seller and intermediator) and check config, agreement struct', async () => {
       // When
       let configTable;
       let agreementTable;
@@ -83,7 +87,7 @@ describe('Successful retracting contract tests', () => {
       assert.deepEqual(intermediatorRetract, 1)
     })
 
-  it('Retract contract without balance, should set contract to closed', async () => {
+  it('Retract contract (seller and intermediator) without balance, should set contract to closed', async () => {
       // When
       let configTable;
       let agreementTable;
@@ -104,8 +108,33 @@ describe('Successful retracting contract tests', () => {
       assert.deepEqual(sellerRetract, 1)
       assert.deepEqual(intermediatorRetract, 1)
     })
+/***********************************************************************************
+ retractContract() test (buyer and intermediator)
+/**********************************************************************************/
 
-  it('Retract contract from buyer and intermediator, should set right config', async () => {
+    it('Retract contract (buyer and intermediator) without balance, should set contract to closed', async () => {
+      // When
+      let configTable;
+      let agreementTable;
+      try {
+        await testService.retract('buyer');
+        await testService.retract('intermed');
+        configTable = await testService.getRowsSaleCon('config')
+        agreementTable = await testService.getRowsSaleCon('agreement')
+      } catch (error) {
+        assert.ifError(error)
+      }
+      const { contractRetracted, contractIsClosed } = configTable.rows[0]
+      const { buyerRetract, intermediatorRetract } = agreementTable.rows[0]
+  
+      // Then
+      assert.deepEqual(contractRetracted, 1)
+      assert.deepEqual(contractIsClosed, 1)
+      assert.deepEqual(buyerRetract, 1)
+      assert.deepEqual(intermediatorRetract, 1)
+    })
+
+  it('Retract paid contract from buyer and intermediator, should set right config', async () => {
       // When
       let configTable;
       let agreementTable;
@@ -129,7 +158,7 @@ describe('Successful retracting contract tests', () => {
       assert.deepEqual(intermediatorRetract, 1)
       assert.deepEqual(buyerIsPaidBack, 1)
     })
-  it('Retract contract from seller and intermediator, should set right config', async () => {
+  it('Retract paid contract from seller and intermediator, should set right config', async () => {
       // When
       let configTable;
       let agreementTable;

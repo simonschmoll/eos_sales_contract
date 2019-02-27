@@ -84,9 +84,9 @@ export default {
       eosUtil.retractSeller(state.contractState.seller)
         .catch(error => window.alert(`${error.toString()}`));
     },
-    async retractIntermed({ state }) {
+    async retractIntermed({ state }, buyerIsRight) {
       console.log('Mutation retractIntermed');
-      eosUtil.retractIntermed(state.contractState.intermediator)
+      eosUtil.retractIntermed(state.contractState.intermediator, buyerIsRight)
         .catch(error => window.alert(`${error.toString()}`));
     },
     async withdraw({ state }) {

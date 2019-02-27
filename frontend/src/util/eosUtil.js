@@ -62,9 +62,9 @@ const retractSeller = async (from) => {
   const wallet = await eos.getSellerWallet();
   return send(getContractName(), 'retract', { retractor: from }, wallet);
 };
-const retractIntermed = async (from) => {
+const retractIntermed = async (from, buyerIsRight) => {
   const wallet = await eos.getIntermedWallet();
-  return send(getContractName(), 'retract', { retractor: from }, wallet);
+  return send(getContractName(), 'finalretract', { retractor: from, buyerIsRight }, wallet);
 };
 const retractBuyer = async (from) => {
   const wallet = await eos.getBuyerWallet();

@@ -24,6 +24,7 @@
             <th>Paid?</th>
             <th>Received?</th>
             <th>Closed?</th>
+            <th>Buyer is Paid Back?</th>
           </tr>
         <tr>
           <td v-if="getItem.itemPaid==false" style="background-color: #F66666">No</td>
@@ -31,6 +32,8 @@
           <td v-if="getItem.itemReceived==false" style="background-color: #F66666">No</td>
           <td v-else style="background-color: green">Yes</td>
           <td v-if="getStatus==false" style="background-color: #F66666">No</td>
+          <td v-else style="background-color: green">Yes</td>
+          <td v-if="getBuyerIsPaidBack==false" style="background-color: #F66666">No</td>
           <td v-else style="background-color: green">Yes</td>
         </tr>
       </table>
@@ -109,15 +112,19 @@
           </tr>
         </table>
       </div>
-      <div class="actions">
+     <div class="actions">
         <h1>Actions Intermediator:</h1>
         <table class="actionTable">
           <tr>
-            <th class="thAction">Retract</th>
+            <th class="thAction">Retract in favor of seller</th>
+            <th class="thAction">Retract in favor of buyer</th>
           </tr>
           <tr>
             <td class="tdAction">
-              <button class="buttonRetract" @click="retractIntermed()">Retract</button>
+              <button class="buttonRetract" @click="retractIntermed(false)">Retract</button>
+            </td>
+            <td class="tdAction">
+              <button class="buttonRetract" @click="retractIntermed(true)">Retract</button>
             </td>
           </tr>
         </table>
@@ -176,9 +183,9 @@ export default {
       console.log('Buyer wants to retract (SalesContract)');
       this.$store.dispatch('retractBuyer');
     },
-    retractIntermed() {
+    retractIntermed(buyerIsRight) {
       console.log('Intermed wants to retract (SalesContract)');
-      this.$store.dispatch('retractIntermed');
+      this.$store.dispatch('retractIntermed', buyerIsRight);
     },
     retractSeller() {
       console.log('Seller wants to retract (SalesContract)');

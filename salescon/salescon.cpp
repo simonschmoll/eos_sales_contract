@@ -156,33 +156,41 @@ void salescon::retract(name retractor)
 {
   name seller = getSeller();
   name buyer = getBuyer();
-  name intermediator = getIntermediator();
   assertContractClosedStatus(false);
   assertRetractStatus(false);
 
   auto agreement = getAgreement();
   if (retractor == buyer)
   {
+    require_auth(buyer);
     eosio_assert(!agreement.sellerRetract, "Can not retract, because seller already retracted");
-  }
-  else if (retractor == seller){
-      eosio_assert(!agreement.buyerRetract, "Can not retract, because buyer already retracted");
-  } 
-  require_auth(retractor);
-  eosio_assert(retractor == buyer || retractor == seller || retractor == intermediator, "Caller does not have the permission to call this method");
-  if (retractor == buyer)
-  {
     buyerRetract(buyer);
   }
-  else if (retractor == seller)
-  {
+  else if (retractor == seller){
+    require_auth(seller);
+    eosio_assert(!agreement.buyerRetract, "Can not retract, because buyer already retracted");
     sellerRetract(seller);
+  } else {
+    eosio_assert(true == false, "Caller does not have the permission to call this method");
   }
-  else if (retractor == intermediator)
-  {
-    intermediatorRetract(intermediator);
-  }
-  configureRetractedState(retractor);
+}
+
+/**
+ * finalretract
+ * @params { bool buyerIsRight } indicates if the buyer is ruled right in dispute
+ * @conditions contractIsClosed == false, contractRetracted == false, only intermed can finalize retraction
+ * @actions intermed can finalize the retraction in favor of one party
+ * @eos action
+ */
+void salescon::finalretract(bool buyerIsRight)
+{
+  name intermediator = getIntermediator();
+  require_auth(intermediator);
+  assertContractClosedStatus(false);
+  assertRetractStatus(false);
+  assertMarkedAsRetracted();
+  intermediatorRetract(intermediator);
+  configureRetractedState(buyerIsRight);
 }
 
 /**
@@ -288,25 +296,20 @@ void salescon::setBalance(asset value, name payer)
   }
 }
 
-void salescon::configureRetractedState(name retractor)
+void salescon::configureRetractedState(bool buyerIsRight)
 {
-  auto iterator = _agreement.find(0);
-  const auto &str = *iterator;
-  if ((str.sellerRetract && str.buyerRetract) ||
-      (str.sellerRetract && str.intermediatorRetract) ||
-      (str.buyerRetract && str.intermediatorRetract))
+  name intermediator = getIntermediator();
+  auto config = getConfig();
+  if (config.balance.amount == 0)
   {
-    auto config = getConfig();
-    if (config.balance.amount == 0)
-    {
-      setContractClosedStatus(true, retractor);
-    }
-    else
-    {
-      setBuyerPaidBack((!(str.sellerRetract && str.intermediatorRetract)), retractor);
-    }
-    setRetractStatus(true, retractor);
+    setContractClosedStatus(true, intermediator);
   }
+  else
+  {
+    setBuyerPaidBack(buyerIsRight, intermediator);
+  }
+  setRetractStatus(true, intermediator);
+  
 }
 
 void salescon::buyerRetract(name buyer)
@@ -386,6 +389,14 @@ void salescon::assertContractClosedStatus(bool status)
   status ? eosio_assert(config.contractIsClosed == status, "assertContractClosedStatus: Contract should be closed") : eosio_assert(config.contractIsClosed == status, "Contract is closed");
 }
 
+void salescon::assertMarkedAsRetracted()
+{
+  auto iterator = _agreement.find(0);
+  eosio_assert(iterator != _agreement.end(), "assertMarkedAsRetracted: Agreement not initialized");
+  const auto &agree = *iterator;
+  eosio_assert(agree.sellerRetract || agree.buyerRetract, "Contract is not marked as retracted by buyer or seller");
+}
+
 name salescon::getSeller()
 {
   auto iterator = _config.find(0);
@@ -439,7 +450,7 @@ extern "C" void apply(uint64_t receiver, uint64_t code, uint64_t action)
   {
     switch (action)
     {
-      EOSIO_DISPATCH_HELPER(salescon, (setitem)(init)(itemreceived)(withdraw)(retract)(changeseller))
+      EOSIO_DISPATCH_HELPER(salescon, (setitem)(init)(itemreceived)(withdraw)(retract)(finalretract)(changeseller))
     }
   }
 }

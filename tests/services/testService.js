@@ -66,6 +66,10 @@ exports.retract = async (from) => {
   await exports.send(exports.getContractName(), 'retract', from , 'active', { retractor: from });
 }
 
+exports.finalretract = async (from, buyerIsRight) => {
+  await exports.send(exports.getContractName(), 'finalretract', from , 'active', { buyerIsRight });
+}
+
 exports.itemReceived = async (from) => {
   await exports.send(exports.getContractName(), 'itemreceived', from , 'active', {});
 }

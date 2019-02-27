@@ -24,7 +24,7 @@ describe('Errorful retracting contract tests', () => {
     try {
       // When
       await testService.retract('random');
-      assert.fail()
+      assert.fail('retract by random should fail')
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: Caller does not have the permission to call this method', error.toString());
@@ -35,14 +35,14 @@ describe('Errorful retracting contract tests', () => {
  retractContract test while contract not intact
 /**********************************************************************************/
 
-  it('Retraction after contract is not intact anymore', async () => {
+  it('Retraction after contract is not intact anymore through direct retraction', async () => {
+    // When
+    await testService.retract('buyer');
+    await testService.finalretract('intermed', true);
+    await new Promise(resolve => setTimeout(resolve, 500)); // Necessary otherwise rpc will say that it is a duplicate transaction
     try {
-      // When
       await testService.retract('buyer');
-      await testService.retract('intermed');
-      await new Promise(resolve => setTimeout(resolve, 500)); // Necessary otherwise rpc will say that it is a duplicate transaction
-      await testService.retract('intermed');
-      assert.fail()
+      assert.fail('retract by buyer should fail')
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: Contract is closed', error.toString());
@@ -57,11 +57,11 @@ describe('Errorful retracting contract tests', () => {
     await testService.setItem('seller');
     await testService.pay('buyer');
     await testService.retract('buyer');
-    await testService.retract('intermed');
+    await testService.finalretract('intermed', true);
     try {
       // When
       await testService.retract('seller');
-      assert.fail()
+      assert.fail('retract by seller should fail')
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: Contract must not be retracted', error.toString());
@@ -72,42 +72,89 @@ describe('Errorful retracting contract tests', () => {
     await testService.setItem('seller');
     await testService.pay('buyer');
     await testService.retract('seller');
-    await testService.retract('intermed');
+    await testService.finalretract('intermed', false);
     try {
       // When
       await testService.retract('buyer');
-      assert.fail()
+      assert.fail('retract by buyer should fail')
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: Contract must not be retracted', error.toString());
     }
   })
 
-  /***********************************************************************************
-   retractContract test seller and buyer try both to retract while contract is intact
-  /**********************************************************************************/
-
-  it('Buyer wants retract after seller', async () => {
-    try {
-      // When
-      await testService.retract('seller');
+    /***********************************************************************************
+     finalizeRetraction test
+    /**********************************************************************************/
+    
+    it("Finalize Retraction by buyer should fail", async () => {    
       await testService.retract('buyer');
-      assert.fail()
+      try {
+          // When
+          await testService.finalretract('buyer', true);
+          assert.fail("finalretract from buyer should fail")            
+      } catch (error) {
+          // Then
+          assert.deepEqual('Error: missing authority of intermed', error.toString());
+      }
+  }) 
+
+  it("Finalize Retraction by seller should fail", async () => {    
+    await testService.retract('seller');
+    try {
+        // When
+        await testService.finalretract('seller', false);
+        assert.fail("finalretract from buyer should fail")            
     } catch (error) {
-      // Then
-      assert.deepEqual('Error: assertion failure with message: Can not retract, because seller already retracted', error.toString());
+        // Then
+        assert.deepEqual('Error: missing authority of intermed', error.toString());
     }
   })
 
-  it('Seller wants retract after buyer', async () => {
-    try {
-      // When
-      await testService.retract('buyer');
+  it("Contract is retracted, but intermediator calls finalize again", async () => {    
+      // Given
+      await testService.setItem('seller');
+      await testService.pay('buyer');
       await testService.retract('seller');
-      assert.fail()
-    } catch (error) {
-      // Then
-      assert.deepEqual('Error: assertion failure with message: Can not retract, because buyer already retracted', error.toString());
-    }
+      await testService.finalretract('intermed', false);
+      await new Promise(resolve => setTimeout(resolve, 500)); // Necessary otherwise rpc will say that it is a duplicate transaction
+      try {
+          // When
+          await testService.finalretract('intermed', false);
+          assert.fail("finalretract from intermediator should fail")            
+      } catch (error) {
+          // Then
+          assert.deepEqual('Error: assertion failure with message: Contract must not be retracted', error.toString());
+      }
+  })
+
+  it("Contract is not intact, but intermediator calls finalize", async () => {    
+      // Given
+      await testService.setItem('seller');
+      await testService.pay('buyer');
+      await testService.itemReceived('buyer');
+      await testService.withdraw('seller');
+      try {
+          // When
+          await testService.finalretract('intermed', false);
+          assert.fail("finalretract from intermediator should fail")           
+      } catch (error) {
+          // Then
+          assert.deepEqual('Error: assertion failure with message: Contract is closed', error.toString());
+      }
+  })
+
+  it("Contract is not marked as retracted by buyer or seller, but intermediator calls finalize", async () => {    
+      // Given
+      await testService.setItem('seller');
+      await testService.pay('buyer');
+      try {
+          // When
+          await testService.finalretract('intermed', false);
+          assert.fail("finalretract from intermediator should fail")            
+      } catch (error) {
+          // Then
+          assert.deepEqual('Error: assertion failure with message: Contract is not marked as retracted by buyer or seller', error.toString()); 
+      }
   })
 })

@@ -23,12 +23,12 @@ describe('Successful changing seller tests', () => {
         
       } catch (error) {
         // Then
-        assert.ifError(error);
+        assert.ifError(error, 'Setup is throwing an error');
       }
       try {
         rowsConfig = await testService.getRowsSaleCon('config')
       } catch (error) {
-        assert.ifError(error)
+        assert.ifError(error, 'Setup is throwing an error')
       }
       const config = rowsConfig.rows[0];
       assert.deepEqual(config.seller, 'random');

@@ -29,6 +29,9 @@ namespace eosio {
       void retract(name retractor);
       
       [[eosio::action]]
+      void finalretract(bool buyerIsRight);
+
+      [[eosio::action]]
       void changeseller(name newSeller);
 
       struct [[eosio::table]] agreestruct {
@@ -79,7 +82,7 @@ namespace eosio {
       void setRetractStatus(bool value, name payer);
       void setBuyerPaidBack(bool value, name payer);
       void setBalance(asset value, name payer);
-      void configureRetractedState(name retractor);
+      void configureRetractedState(bool buyerIsRight);
       void sellerRetract(name seller);
       void buyerRetract(name buyer);
       void intermediatorRetract(name intermediator);
@@ -92,6 +95,7 @@ namespace eosio {
       void assertPriceEqualsValue(uint64_t value);
       void assertRetractStatus(bool status);
       void assertContractClosedStatus(bool status);
+      void assertMarkedAsRetracted();
       name getSeller();
       name getBuyer();
       name getIntermediator();

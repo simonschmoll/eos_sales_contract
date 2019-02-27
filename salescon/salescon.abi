@@ -1,5 +1,5 @@
 {
-    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Tue Feb 19 10:56:19 2019",
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Wed Feb 27 11:24:05 2019",
     "version": "eosio::abi/1.1",
     "structs": [
         {
@@ -81,6 +81,16 @@
                 {
                     "name": "intermediator",
                     "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "finalretract",
+            "base": "",
+            "fields": [
+                {
+                    "name": "buyerIsRight",
+                    "type": "bool"
                 }
             ]
         },
@@ -187,6 +197,11 @@
         {
             "name": "changeseller",
             "type": "changeseller",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "finalretract",
+            "type": "finalretract",
             "ricardian_contract": ""
         },
         {

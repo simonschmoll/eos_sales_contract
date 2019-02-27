@@ -18,7 +18,7 @@ describe('Errorful sales functionality', () => {
     // When
     try {
       await testService.setItem('buyer');
-      assert.fail();
+      assert.fail('setItem by buyer should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: missing authority of seller', error.toString());
@@ -30,7 +30,7 @@ describe('Errorful sales functionality', () => {
       // Given
       await testService.setItem('seller')
     } catch (error) {
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
 
     try {
@@ -39,7 +39,7 @@ describe('Errorful sales functionality', () => {
         itemName: "bike2", 
         itemPrice: '10.0000 EOS'
       });
-      assert.fail();
+      assert.fail('setItem by seller should fail');
     } catch (error) {
        // Then
       assert.deepEqual('Error: assertion failure with message: Item already set', error.toString());
@@ -52,7 +52,7 @@ describe('Errorful sales functionality', () => {
       await testService.setItem('seller', {
         itemPrice: '10.0000 EOS'
       });
-      assert.fail();
+      assert.fail('setItem by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: missing setitem.itemName (type=string)', error.toString());
@@ -66,7 +66,7 @@ describe('Errorful sales functionality', () => {
         itemName: '',
         itemPrice: '10.0000 EOS'
       });
-      assert.fail();
+      assert.fail('setItem by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: Item name must not be null', error.toString());
@@ -79,7 +79,7 @@ describe('Errorful sales functionality', () => {
       await testService.setItem('seller', {
         itemName: "bike2",
       });
-      assert.fail();
+      assert.fail('setItem by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: missing setitem.itemPrice (type=asset)', error.toString());
@@ -93,7 +93,7 @@ describe('Errorful sales functionality', () => {
         itemName: "bike2",
         itemPrice: '10.0000'
       });
-      assert.fail();
+      assert.fail('setItem by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: Invalid quantity', error.toString());
@@ -107,7 +107,7 @@ describe('Errorful sales functionality', () => {
         itemName: "bike2",
         itemPrice: '10.000 EOS'
       });
-      assert.fail();
+      assert.fail('setItem by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: Asset must be of type EOS and with exact 4 decimal places', error.toString());
@@ -121,7 +121,7 @@ describe('Errorful sales functionality', () => {
         itemName: "bike2",
         itemPrice: '10 EOS'
       });
-      assert.fail();
+      assert.fail('setItem by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: Asset must be of type EOS and with exact 4 decimal places', error.toString());
@@ -136,12 +136,12 @@ describe('Errorful sales functionality', () => {
     try {
       await testService.setItem('seller');
     } catch (error) {
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
     // When
     try {
       await testService.pay('seller')
-      assert.fail();
+      assert.fail('pay by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: Transfer must come from buyer', error.toString());
@@ -158,12 +158,12 @@ describe('Errorful sales functionality', () => {
     } catch (error) {
       console.log(error);
       
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
     // When
     try {
       await testService.pay('buyer')
-      assert.fail();
+      assert.fail('pay by buyer should fail');
     } catch (error) {
       assert.deepEqual('Error: assertion failure with message: Contract is closed', error.toString());
     }
@@ -174,7 +174,7 @@ describe('Errorful sales functionality', () => {
     try {
       await testService.setItem('seller');
     } catch (error) {
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
     // When
     try {
@@ -186,7 +186,7 @@ describe('Errorful sales functionality', () => {
         memo: ''
       }
       await testService.send('eosio.token', 'transfer', 'buyer', 'active', wrongPriceData);
-      assert.fail();
+      assert.fail('token transfer should fail');
     } catch (error) {
       assert.deepEqual('Error: assertion failure with message: assertPriceEqualsValue: Transfer value must be equal to price', error.toString());
     }
@@ -202,12 +202,12 @@ describe('Errorful sales functionality', () => {
       await testService.setItem('seller');
       await testService.pay('buyer');
     } catch (error) {
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
     // When
     try {
       await testService.itemReceived('seller');
-      assert.fail();
+      assert.fail('itemReceived by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: missing authority of buyer', error.toString());
@@ -219,12 +219,12 @@ describe('Errorful sales functionality', () => {
     try {
       await testService.setItem('seller');
     } catch (error) {
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
     // When
     try {
       await testService.itemReceived('buyer');
-      assert.fail();
+      assert.fail('itemReceived by buyer should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: assertItemPaid: Item was not paid', error.toString());
@@ -242,12 +242,12 @@ describe('Errorful sales functionality', () => {
       await testService.pay('buyer');
       await testService.itemReceived('buyer');
     } catch (error) {
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
     // When
     try {
       await testService.withdraw('buyer');
-      assert.fail();
+      assert.fail('withdraw by buyer should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: missing authority of seller', error.toString());
@@ -260,12 +260,12 @@ describe('Errorful sales functionality', () => {
       await testService.setItem('seller');
       await testService.pay('buyer');
     } catch (error) {
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
     // When
     try {
       await testService.withdraw('seller');
-      assert.fail();
+      assert.fail('withdraw by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: assertItemReceived: Item was not marked as received', 
@@ -281,13 +281,13 @@ describe('Errorful sales functionality', () => {
       await testService.itemReceived('buyer');
       await testService.withdraw('seller');
     } catch (error) {
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
     // When
     try {
       await new Promise(resolve => setTimeout(resolve, 500)); // Necessary otherwise rpc will say that it is a duplicate transaction
       await testService.withdraw('seller');
-      assert.fail();
+      assert.fail('withdraw by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: assertion failure with message: Contract is closed', 
@@ -301,14 +301,14 @@ describe('Errorful sales functionality', () => {
       await testService.setItem('seller');
       await testService.pay('buyer');
       await testService.retract('buyer');
-      await testService.retract('intermed');
+      await testService.finalretract('intermed', true);
     } catch (error) {
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
     // When
     try {
       await testService.withdraw('seller');
-      assert.fail();
+      assert.fail('withdraw by seller should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: missing authority of buyer', error.toString());
@@ -322,14 +322,14 @@ describe('Errorful sales functionality', () => {
       await testService.pay('buyer');
       await testService.itemReceived('buyer')
       await testService.retract('seller');
-      await testService.retract('intermed');
+      await testService.finalretract('intermed', false);
     } catch (error) {
-      assert.equal(true, false, 'Setup is throwing an error')
+      assert.ifError(error, 'Setup is throwing an error')
     }
     // When
     try {
       await testService.withdraw('buyer');
-      assert.fail();
+      assert.fail('withdraw by buyer should fail');
     } catch (error) {
       // Then
       assert.deepEqual('Error: missing authority of seller', error.toString());

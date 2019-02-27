@@ -20,7 +20,7 @@ describe('Errorful changing seller tests', () => {
       try {
         // When
         await testService.changeSeller('buyer', 'intermed');
-        assert.fail()
+        assert.fail('changeSeller by buyer should fail')
       } catch (error) {
         // Then
         assert.deepEqual('Error: missing authority of seller', error.toString());
@@ -34,16 +34,16 @@ describe('Errorful changing seller tests', () => {
         await testService.setItem('seller');
         await testService.pay('buyer');
         await testService.retract('seller');
-        await testService.retract('intermed');
+        await testService.finalretract('intermed', false);
       }
       catch(error) {
         console.log(error);
-        assert.equal(true, false, 'Setup is throwing an error');
+        assert.ifError(error, 'Setup is throwing an error');
       }
       // When
       try {
         await testService.changeSeller('seller', 'intermed');
-        assert.fail();
+        assert.fail('changeSeller by seller should fail');
       } catch (error) {
         // Then
         assert.deepEqual('Error: assertion failure with message: Contract must not be retracted', error.toString());

@@ -56,7 +56,10 @@ async function pay(price) {
   return send('eosio.token', 'transfer', data, wallet);
 }
 
-const changeSeller = async newSeller => send(getContractName(), 'changeseller', { newSeller });
+const changeSeller = async (newSeller) => {
+  const wallet = await eos.getSellerWallet();
+  return send(getContractName(), 'changeseller', { newSeller }, wallet);
+};
 
 const retractSeller = async (from) => {
   const wallet = await eos.getSellerWallet();

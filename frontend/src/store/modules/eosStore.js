@@ -33,6 +33,11 @@ export default {
       // console.log('Data is: ', data);
       commit('loadData', data);
     },
+    
+    async changeSeller({ commit }, newSellerAddress) {
+      await eosUtil.changeSeller(newSellerAddress)
+        .catch(error => window.alert(`${error.toString()}`));
+    },
 
     async loadData({ state, commit }) {
       console.log('Loading InitialData');

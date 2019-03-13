@@ -11,6 +11,7 @@ import scatter from 'eos-transit-scatter-provider';
 let sellerWallet;
 let buyerWallet;
 let intermedWallet;
+let deployWallet;
 const walletProvidersConf = [
   scatter(),
 ];
@@ -65,6 +66,19 @@ const initSellerWallet = async () => {
   await sellerWallet.login();
 };
 
+const initDeployWallet = async () => {
+  const accessContextDeploy = initAccessContext({
+    appName: 'Deploy',
+    network,
+    walletProviders: walletProvidersConf,
+  });
+  const walletProviders = accessContextDeploy.getWalletProviders();
+  const selectedProvider = walletProviders[0];
+  deployWallet = await accessContextDeploy.initWallet(selectedProvider);
+  await deployWallet.connect();
+  await deployWallet.login();
+};
+
 const getSellerWallet = async () => {
   console.log('getSellerWallet beginning');
   if (sellerWallet === undefined) {
@@ -111,67 +125,24 @@ const getIntermedWallet = async () => {
   return intermedWallet;
 };
 
+const getDeployWallet = async () => {
+  if (deployWallet === undefined) {
+    await initDeployWallet();
+    console.log('Init deploy Wallet ', deployWallet);
+  } else {
+    await deployWallet.terminate();
+    await initDeployWallet();
+  }
+  if (deployWallet.authenticated === false) {
+    await deployWallet.login();
+  }
+  return deployWallet;
+};
+
 
 export default {
   getSellerWallet,
   getIntermedWallet,
   getBuyerWallet,
+  getDeployWallet,
 };
-
-// Now we have an instance of `wallet` that is tracked by our `accessContext`.
-// Lets connect to it and authenticate (you need Scatter app running)
-// NOTE: Only use `await` inside the `async` function, its used here just to
-// highlight that its asynchronous.
-
-
-// wallet.connected === true
-
-// Now that we are connected, lets authenticate (in case of a Scatter app,
-// it does it right after connection, so this is more for the state tracking
-// and for WAL to fetch the EOS account data for us)
-
-// wallet.authenticated === true
-// wallet.auth === { accountName: 'some_user', permission: 'active', publicKey: '...' }
-// wallet.accountInfo === { name: 'some_user', core_liquid_balance: ..., ram_quota: ..., etc... }
-
-// Now that we have a wallet that is connected, logged in and have account data available,
-// you can use it to sign transactions using the `eosjs` API instance that is automatically
-// created and maintained by the wallet:
-
-// const eosAmount = 10;
-
-// wallet.eosApi
-//   .transact({
-//     actions: [
-//       {
-//         account: 'eosio.token',
-//         name: 'transfer',
-//         authorization: [
-//           {
-//             actor: wallet.auth.accountName,
-//             permission: wallet.auth.permission
-//           }
-//         ],
-//         data: {
-//           from: wallet.auth.accountName,
-//           to: 'receiving_user',
-//           quantity: `${eosAmount.toFixed(4)} EOS`,
-//           memo: ''
-//         }
-//       }
-//     ]
-//   },
-//   {
-//     broadcast: true,
-//     blocksBehind: 3,
-//     expireSeconds: 60
-//   }
-// )
-// .then(result => {
-//   console.log('Transaction success!', result);
-//   return result;
-// })
-// .catch(error => {
-//   console.error('Transaction error :(', error);
-//   throw error;
-// });

@@ -1,8 +1,13 @@
 import eos from './eos';
 import rpcModule from './rpcModule';
+import wasm from './wasm';
+import abi from './abi';
+
+
+let deployName;
 
 async function send(account, actionName, data, wallet) {
-  console.log('Wallet in Send: ', wallet);
+  console.log('Wallet and account in Send: ', wallet, account);
   if (wallet.authenticated === false) {
     console.log('Need to login again from Send function');
 
@@ -32,82 +37,136 @@ async function send(account, actionName, data, wallet) {
     });
 }
 
-function getContractName() {
-  return 'salescon';
+
+async function init(data, contractName) {
+  console.log('init function util');
+  const wallet = await eos.getSellerWallet();
+  return send(contractName, 'init', data, wallet);
 }
 
-async function setItem(item) {
+async function deploy() {
+  const wallet = await eos.getDeployWallet();
+
+  deployName = wallet.auth.accountName;
+  console.log('wasm', wasm.wasm);
+  console.log('abi', abi.abi);
+  const account = wallet.auth.accountName;
+  return wallet.eosApi.transact(
+    {
+      actions: [
+        {
+          account: 'eosio',
+          name: 'setcode',
+          authorization: [
+            {
+              actor: wallet.auth.accountName,
+              permission: 'active',
+            },
+          ],
+          data: {
+            account,
+            vmtype: 0,
+            vmversion: 0,
+            code: wasm.wasm.toString(),
+          },
+        },
+        {
+          account: 'eosio',
+          name: 'setabi',
+          authorization: [
+            {
+              actor: wallet.auth.accountName,
+              permission: 'active',
+            },
+          ],
+          data: {
+            account,
+            abi: abi.abi.toString(),
+          },
+        },
+      ],
+    },
+    {
+      blocksBehind: 3,
+      expireSeconds: 30,
+    },
+  );
+}
+
+function getContractName() {
+  return deployName;
+}
+
+async function setItem(item, contractName = 'salescon') {
   console.log('In Set Item', item);
   const wallet = await eos.getSellerWallet();
   console.log('Wallet in setItem', wallet);
 
-  return send(getContractName(), 'setitem', item, wallet);
+  return send(contractName, 'setitem', item, wallet);
 }
 
-async function pay(price) {
+async function pay(price, contractName) {
   console.log('Pay called');
   const wallet = await eos.getBuyerWallet();
   const data = {
     from: wallet.auth.accountName,
-    to: getContractName(),
+    to: contractName,
     quantity: price,
     memo: '',
   };
   return send('eosio.token', 'transfer', data, wallet);
 }
 
-const changeSeller = async (newSeller) => {
+const changeSeller = async (newSeller, contractName) => {
   const wallet = await eos.getSellerWallet();
-  return send(getContractName(), 'changeseller', { newSeller }, wallet);
+  return send(contractName, 'changeseller', { newSeller }, wallet);
 };
 
-const retractSeller = async (from) => {
+const retractSeller = async (from, contractName) => {
   const wallet = await eos.getSellerWallet();
-  return send(getContractName(), 'retract', { retractor: from }, wallet);
+  return send(contractName, 'retract', { retractor: from }, wallet);
 };
-const retractIntermed = async (from, buyerIsRight) => {
+const retractIntermed = async (from, buyerIsRight, contractName) => {
   const wallet = await eos.getIntermedWallet();
-  return send(getContractName(), 'finalretract', { retractor: from, buyerIsRight }, wallet);
+  return send(contractName, 'finalretract', { retractor: from, buyerIsRight }, wallet);
 };
-const retractBuyer = async (from) => {
+const retractBuyer = async (from, contractName) => {
   const wallet = await eos.getBuyerWallet();
-  return send(getContractName(), 'retract', { retractor: from }, wallet);
+  return send(contractName, 'retract', { retractor: from }, wallet);
 };
 
-const itemReceived = async () => {
+const itemReceived = async (contractName) => {
   const wallet = await eos.getBuyerWallet();
-  return send(getContractName(), 'itemreceived', {}, wallet);
+  return send(contractName, 'itemreceived', {}, wallet);
 };
 
-const withdrawBuyer = async (account) => {
+const withdrawBuyer = async (account, contractName) => {
   const wallet = await eos.getBuyerWallet();
   console.log('Withdraw buyer wallet', wallet);
 
-  return send(getContractName(), 'withdraw', { to: account.toString() }, wallet);
+  return send(contractName, 'withdraw', { to: account.toString() }, wallet);
 };
 
-const withdrawSeller = async (account) => {
+const withdrawSeller = async (account, contractName) => {
   const wallet = await eos.getSellerWallet();
   console.log('Withdraw wallet', wallet);
+  console.log('Withdraw account', account, contractName);
 
-  return send(getContractName(), 'withdraw', { to: account.toString() }, wallet);
+  return send(contractName, 'withdraw', { to: account.toString() }, wallet);
 };
 
-const getRowsSaleCon = async (table) => {
-  const contractName = getContractName();
-  return rpcModule.rpc.get_table_rows({
-    json: true,
-    code: contractName,
-    scope: contractName,
-    table,
-    limit: 10,
-  });
-};
+const getRowsSaleCon = async (table, contractName) => rpcModule.rpc.get_table_rows({
+  json: true,
+  code: contractName,
+  scope: contractName,
+  table,
+  limit: 10,
+});
 
-const getContractData = async () => {
-  const config = getRowsSaleCon('config');
-  const agreement = getRowsSaleCon('agreement');
-  const item = getRowsSaleCon('item');
+const getContractData = async (contractName) => {
+  const config = getRowsSaleCon('config', contractName);
+  const agreement = getRowsSaleCon('agreement', contractName);
+  const item = getRowsSaleCon('item', contractName);
   return Promise.all([config, agreement, item]).then((value) => {
     // console.log(value);
     let name;
@@ -144,6 +203,9 @@ const getContractData = async () => {
 };
 
 export default {
+  getContractName,
+  init,
+  deploy,
   setItem,
   send,
   withdrawBuyer,

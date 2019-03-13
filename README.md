@@ -73,12 +73,15 @@ To interact with the smart contract on the EOS Blockchain download the wallet pr
 Now open http://localhost:8082 and you can interact with the contract.
 
 ### Intended steps for interaction: 
-- Set Item
-- Pay Item
-- Received Item
-- Withdraw
+Note: Every time you press a button while interacting with the contract, 
+a pop up of Scatter will prompt you to allow this action. In the first interaction with the contract you need to choose the accounts for interaction. Make sure to select the correct account for the specific role in the contract. E.g. for Deploy choose salescon, for setItem choose seller, etc.  
+- Deploy contract (for testing purposes choose the salescon account (from the scatter pop up) for deployment, this is the account where the contract will be deployed)  
+**If you choose another deployment account you need to make sure that the account adds the code permission e.g. in cleos: 'cleos set account permission theAccountYouChoose active --add-code'**
+- Set Item (seller account)
+- Pay Item (buyer account)
+- Received Item (buyer account)
+- Withdraw (seller account)
 
-Everytime a button is clicked, Scatter will ask you for permission.
 
 
 

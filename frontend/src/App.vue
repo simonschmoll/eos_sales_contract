@@ -1,19 +1,16 @@
 <template>
+  <v-app style="background: #E3F2FD">
   <div id="app">
-    <header>
-      <nav>
-        <ul>
-          <li class="nav-item">
-              Sales Contract
-          </li>
-        </ul>
-      </nav>
-    </header>
+     <v-toolbar color="blue darken-3">
+      <span><h2>Sales Contract</h2></span>
+
+    </v-toolbar>
     <main>
        <router-view v-if="contractInstance" name="default"/>
       <router-view v-else name="deploy"/>
     </main>
   </div>
+  </v-app>
 </template>
 
 <script>
@@ -47,14 +44,6 @@ export default {
 };
 </script>
 
-<style>
-body {
-  background: linear-gradient(to bottom, rgb(121, 121, 121), #1000);
-  background-attachment: fixed;
-}
-</style>
-
-
 <style scoped>
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
@@ -67,7 +56,7 @@ main {
   top: 20px;
 }
 header {
-  background-color: #999;
+  background-color: #bdc3c7;
   width: auto;
   margin: 0 auto;
 }

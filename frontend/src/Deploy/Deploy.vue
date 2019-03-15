@@ -1,33 +1,68 @@
 <template>
   <div>
-    <h1>Deploy and initialize contract:</h1>
-    <table>
-      <thead>
-        <th>Deploy</th>
-        <th>Initialize</th>
-        <th>Connect to existing Contract</th>
-      </thead>
-      <tbody>
-        <td>
-          Already deployed?
-          <div class="deploy" style="background-color: green" v-if="deployed">Yes!</div>
-          <div class="deploy" style="background-color: #F66666" v-else>No</div>
-          <button class="button buttonBuyer" @click="deployContract()">Deploy</button>
-        </td>
-        <td> Address Seller: <input v-model="addrSeller" type="text"
-          name="seller" class="input-con"><br>
-          Address Buyer: <input v-model="addrBuyer" type="text"
-            name="buyer" class="input-con"><br>
-          Address Intermediator:
-          <input v-model="addrIntermediator" type="text" name="intermediator" class="input-con"><br>
-          <button class="button buttonBuyer" @click="initialize()">Initialize</button>
-         </td>
-         <td>
-           <input v-model="contractAddress" type="text" name="ContractAddr" class="input-con"><br>
-          <button class="button buttonBuyer" @click="connectToContract()">Connect</button>
-         </td>
-      </tbody>
-    </table>
+    <h1>Deploy and initialize contract</h1>
+    <v-container fluid grid-list-xl fill-height>
+      <v-layout>
+        <v-flex md4>
+          <v-card color="secondary" hover>
+          <v-card-title primary-title>
+            <div>
+              <h3 class="display-1 mb-3">Deploy</h3>
+              <div>
+                Contract already deployed?
+                <v-chip dark color="success" v-if="deployed">Yes
+                  <v-icon dark right>check_circle</v-icon>
+                </v-chip>
+                <v-chip dark color="error" v-else>No</v-chip>
+              </div>
+            </div>
+          </v-card-title>
+
+          <v-card-actions>
+            <v-btn block color="primary" @click="deployContract()">Deploy</v-btn>
+          </v-card-actions>
+        </v-card>
+        </v-flex>
+        <v-flex md4>
+          <v-card color="secondary" hover>
+          <v-card-title primary-title>
+            <div>
+              <h3 class="display-1 mb-3">Initialize</h3>
+              <div>
+                <v-text-field label="Address Seller" v-model="addrSeller"
+                  name="seller"></v-text-field>
+                <v-text-field label="Address Buyer" v-model="addrBuyer"
+                name="buyer"></v-text-field>
+                <v-text-field label="Address Intermediator" v-model="addrIntermediator"
+                name="intermediator"></v-text-field>
+              </div>
+            </div>
+          </v-card-title>
+
+          <v-card-actions>
+            <v-btn block color="primary" @click="initialize()">Initialize</v-btn>
+          </v-card-actions>
+        </v-card>
+        </v-flex>
+        <v-flex md4>
+          <v-card color="secondary" hover>
+          <v-card-title primary-title>
+            <div>
+              <h3 class="display-1 mb-3">Connect to contract</h3>
+              <div>
+              <v-text-field label="Contract Address" v-model="contractAddress"
+                name="intermediator"></v-text-field>
+            </div>
+            </div>
+
+          </v-card-title>
+          <v-card-actions>
+            <v-btn block color="primary" @click="connectToContract()">Connect</v-btn>
+          </v-card-actions>
+        </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
   </div>
 </template>
 
@@ -70,23 +105,9 @@ export default {
 </script>
 
 <style scoped>
-.input-con {
-  width: 500px;
-  font-size: 20pt;
-  margin-bottom: 5px;
-}
-
-td, th {
-  font-size: 20pt;
-}
 
 h1 {
   font-size: 24pt;
-}
-
-.deploy {
-  margin: 5px;
-  border-style: ridge;
 }
 
 

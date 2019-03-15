@@ -80,6 +80,7 @@ export default {
     },
 
     async loadData({ state, commit }) {
+      state.contractName = 'salescon'
       if(state.contractName) {
         console.log('Loading InitialData');
         const data = await eosUtil.getContractData(state.contractName);

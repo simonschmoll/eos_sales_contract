@@ -188,6 +188,7 @@ const getContractData = async (contractName) => {
       balance: value[0].rows[0].balance,
       seller: value[0].rows[0].seller,
       buyer: value[0].rows[0].buyer,
+      itemSet: value[0].rows[0].itemSet,
       intermediator: value[0].rows[0].intermediator,
       contractClosed: value[0].rows[0].contractIsClosed,
       buyerIsPaidBack: value[0].rows[0].buyerIsPaidBack,

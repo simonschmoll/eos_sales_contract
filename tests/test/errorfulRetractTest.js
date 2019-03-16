@@ -53,7 +53,7 @@ describe('Errorful retracting contract tests', () => {
    retractContract test, attempt by third participant to also retract
   /**********************************************************************************/
 
-  it('Contract is retracted (intermediator, buyer), buyer tries to retract', async () => {
+  it('Contract is retracted (intermediator, buyer), seller tries to retract', async () => {
     await testService.setItem('seller');
     await testService.pay('buyer');
     await testService.retract('buyer');

@@ -163,12 +163,10 @@ void salescon::retract(name retractor)
   if (retractor == buyer)
   {
     require_auth(buyer);
-    eosio_assert(!agreement.sellerRetract, "Can not retract, because seller already retracted");
     buyerRetract(buyer);
   }
   else if (retractor == seller){
     require_auth(seller);
-    eosio_assert(!agreement.buyerRetract, "Can not retract, because buyer already retracted");
     sellerRetract(seller);
   } else {
     eosio_assert(true == false, "Caller does not have the permission to call this method");

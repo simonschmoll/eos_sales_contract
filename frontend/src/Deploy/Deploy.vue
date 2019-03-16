@@ -17,9 +17,9 @@
               </div>
             </div>
           </v-card-title>
-
           <v-card-actions>
-            <v-btn block color="primary" @click="deployContract()">Deploy</v-btn>
+            <v-btn :loading="deployloader" :disabled="deployButtonDisabled"
+            block color="primary" @click="deployContract();loader='deployloader'">Deploy</v-btn>
           </v-card-actions>
         </v-card>
         </v-flex>
@@ -40,7 +40,8 @@
           </v-card-title>
 
           <v-card-actions>
-            <v-btn block color="primary" @click="initialize()">Initialize</v-btn>
+            <v-btn :loading="initloader" :disabled="initloader"
+            block color="primary" @click="initialize();loader = 'initloader'">Initialize</v-btn>
           </v-card-actions>
         </v-card>
         </v-flex>
@@ -57,7 +58,10 @@
 
           </v-card-title>
           <v-card-actions>
-            <v-btn block color="primary" @click="connectToContract()">Connect</v-btn>
+            <v-btn
+            :loading="connectloader" :disabled="connectloader"
+            block color="primary"
+            @click="connectToContract();loader = 'connectloader'">Connect</v-btn>
           </v-card-actions>
         </v-card>
         </v-flex>
@@ -71,6 +75,10 @@ export default {
   name: 'deploy',
   data() {
     return {
+      loader: null,
+      deployloader: false,
+      initloader: false,
+      connectloader: false,
       addrSeller: null,
       addrBuyer: null,
       addrIntermediator: null,
@@ -99,6 +107,34 @@ export default {
     deployed() {
       console.log('Deployed contract?', this.$store.state.eosModule.deployedContract);
       return this.$store.state.eosModule.deployedContract;
+    },
+    loadingFlag() {
+      return this.$store.state.eosModule.loadingFlag;
+    },
+    deployButtonDisabled() {
+      return this.deployloader || Boolean(this.deployed);
+    },
+  },
+  watch: {
+    loader() {
+      const l = this.loader;
+      console.log('Load called');
+
+      this[l] = !this[l];
+
+      // setTimeout(() => {
+      //   (this[l] = false);
+      // }, 7000);
+
+      this.loader = null;
+    },
+    loadingFlag() {
+      if (this.loadingFlag) {
+        this.$store.commit('changeLoadingFlag');
+        this.deployloader = false;
+        this.initloader = false;
+        this.connectloader = false;
+      }
     },
   },
 };

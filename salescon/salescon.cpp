@@ -209,14 +209,11 @@ void salescon::changeseller(name newSeller) {
   });
 }
 
-void salescon::itempaid(name payer)
-{
-  setItemIsPaidFlag(true, payer);
-  asset price = getPrice();
-  setBalance(price, payer);
-  print("Item is paid");
-}
-
+/**
+ * Setter
+ * Sets the itemSet flag to value
+ * @params { bool value, name payer }
+ */
 void salescon::setItemIsSetFlag(bool value, name payer)
 {
   auto iterator = _config.find(0);
@@ -228,6 +225,11 @@ void salescon::setItemIsSetFlag(bool value, name payer)
   }
 }
 
+/**
+ * Setter
+ * Sets the itemPaid flag to value
+ * @params { bool value, name payer }
+ */
 void salescon::setItemIsPaidFlag(bool value, name payer)
 {
   auto iterator = _config.find(0);
@@ -239,6 +241,11 @@ void salescon::setItemIsPaidFlag(bool value, name payer)
   }
 }
 
+/**
+ * Setter
+ * Sets the itemReceived flag to value
+ * @params { bool value, name payer }
+ */
 void salescon::setItemReceivedFlag(bool value, name payer)
 {
   auto iterator = _config.find(0);
@@ -250,6 +257,11 @@ void salescon::setItemReceivedFlag(bool value, name payer)
   }
 }
 
+/**
+ * Setter
+ * Sets the contractIsClosed flag to value
+ * @params { bool value, name payer }
+ */
 void salescon::setContractClosedStatus(bool value, name payer)
 {
   auto iterator = _config.find(0);
@@ -261,6 +273,11 @@ void salescon::setContractClosedStatus(bool value, name payer)
   }
 }
 
+/**
+ * Setter
+ * Sets the contractRetracted flag to value
+ * @params { bool value, name payer }
+ */
 void salescon::setRetractStatus(bool value, name payer)
 {
   auto iterator = _config.find(0);
@@ -272,6 +289,11 @@ void salescon::setRetractStatus(bool value, name payer)
   }
 }
 
+/**
+ * Setter
+ * Sets the buyerIsPaidBack flag to value
+ * @params { bool value, name payer }
+ */
 void salescon::setBuyerPaidBack(bool value, name payer)
 {
   auto iterator = _config.find(0);
@@ -283,6 +305,11 @@ void salescon::setBuyerPaidBack(bool value, name payer)
   }
 }
 
+/**
+ * Setter
+ * Sets the Balance
+ * @params { asset value, name payer }
+ */
 void salescon::setBalance(asset value, name payer)
 {
   auto iterator = _config.find(0);
@@ -294,6 +321,24 @@ void salescon::setBalance(asset value, name payer)
   }
 }
 
+/**
+ * Helper
+ * helper function for transfer function setting the right parameters
+ * @params { name payer }
+ */
+void salescon::itempaid(name payer)
+{
+  setItemIsPaidFlag(true, payer);
+  asset price = getPrice();
+  setBalance(price, payer);
+  print("Item is paid");
+}
+
+/**
+ * Helper
+ * Configure the internal retracted state
+ * @params { bool buyerIsRight }
+ */
 void salescon::configureRetractedState(bool buyerIsRight)
 {
   name intermediator = getIntermediator();
@@ -310,6 +355,11 @@ void salescon::configureRetractedState(bool buyerIsRight)
   
 }
 
+/**
+ * Helper
+ * Set buyer as retracted
+ * @params { name buyer }
+ */
 void salescon::buyerRetract(name buyer)
 {
   auto iterator = _agreement.find(0);
@@ -318,6 +368,11 @@ void salescon::buyerRetract(name buyer)
   });
 }
 
+/**
+ * Helper
+ * Set seller as retracted
+ * @params { name seller }
+ */
 void salescon::sellerRetract(name seller)
 {
   auto iterator = _agreement.find(0);
@@ -326,6 +381,11 @@ void salescon::sellerRetract(name seller)
   });
 }
 
+/**
+ * Helper
+ * Set intermediator as retracted
+ * @params { name intermediator }
+ */
 void salescon::intermediatorRetract(name intermediator)
 {
   auto iterator = _agreement.find(0);
@@ -334,6 +394,11 @@ void salescon::intermediatorRetract(name intermediator)
   });
 }
 
+/**
+ * Helper
+ * Send tokens
+ * @params { name to, asset price }
+ */
 void salescon::sendTokens(name to, asset price)
 {
   action(
@@ -345,48 +410,80 @@ void salescon::sendTokens(name to, asset price)
   setBalance(asset(0, EOS_SYMBOL), to);
 }
 
+/**
+ * Modifier
+ * Check if contract is initialized
+ */
 void salescon::assertInitialized()
 {
   auto iterator = _config.find(0);
   eosio_assert(iterator != _config.end(), "assert initialized: Contract must be initialized!");
 }
 
+/**
+ * Modifier
+ * Check if item is set
+ */
 void salescon::assertItemSet()
 {
   auto config = getConfig();
   eosio_assert(config.itemSet == true, "assertItemSet: Item was not marked as set");
 }
 
+/**
+ * Modifier
+ * Check if item is received
+ */
 void salescon::assertItemReceived()
 {
   auto config = getConfig();
   eosio_assert(config.itemReceived == true, "assertItemReceived: Item was not marked as received");
 }
 
+/**
+ * Modifier
+ * Check if item is paid
+ */
 void salescon::assertItemPaid()
 {
   auto config = getConfig();
   eosio_assert(config.itemPaid == true, "assertItemPaid: Item was not paid");
 }
 
+/**
+ * Modifier
+ * Check if value of msg sender is equal to price of item
+ */
 void salescon::assertPriceEqualsValue(uint64_t value)
 {
   auto iterator = _item.find(0);
   eosio_assert((*iterator).itemPrice.amount == value, "assertPriceEqualsValue: Transfer value must be equal to price");
 }
 
+/**
+ * Modifier
+ * Check if contract is retracted
+ */
 void salescon::assertRetractStatus(bool status)
 {
   auto config = getConfig();
   status ? eosio_assert(config.contractRetracted == status, "assertRetractStatus: Contract must be retracted") : eosio_assert(config.contractRetracted == status, "Contract must not be retracted");
 }
 
+/**
+ * Modifier
+ * Check if contract is intact
+ */
 void salescon::assertContractClosedStatus(bool status)
 {
   auto config = getConfig();
   status ? eosio_assert(config.contractIsClosed == status, "assertContractClosedStatus: Contract should be closed") : eosio_assert(config.contractIsClosed == status, "Contract is closed");
 }
 
+/**
+ * Modifier
+ * Check if contract is marked as retracted
+ */
 void salescon::assertMarkedAsRetracted()
 {
   auto iterator = _agreement.find(0);
@@ -395,6 +492,10 @@ void salescon::assertMarkedAsRetracted()
   eosio_assert(agree.sellerRetract || agree.buyerRetract, "Contract is not marked as retracted by buyer or seller");
 }
 
+/**
+ * Getter
+ * returns { seller }
+ */
 name salescon::getSeller()
 {
   auto iterator = _config.find(0);
@@ -402,6 +503,10 @@ name salescon::getSeller()
   return (*iterator).seller;
 }
 
+/**
+ * Getter
+ * returns { buyer }
+ */
 name salescon::getBuyer()
 {
   auto iterator = _config.find(0);
@@ -409,6 +514,10 @@ name salescon::getBuyer()
   return (*iterator).buyer;
 }
 
+/**
+ * Getter
+ * returns { intermediator }
+ */
 name salescon::getIntermediator()
 {
   auto iterator = _config.find(0);
@@ -416,6 +525,10 @@ name salescon::getIntermediator()
   return (*iterator).intermediator;
 }
 
+/**
+ * Getter
+ * returns { itemPrice }
+ */
 asset salescon::getPrice()
 {
   auto iterator = _item.find(0);
@@ -423,6 +536,10 @@ asset salescon::getPrice()
   return (*iterator).itemPrice;
 }
 
+/**
+ * Getter
+ * returns { agreement }
+ */
 eosio::salescon::agreestruct salescon::getAgreement()
 {
   auto agreeIt = _agreement.find(0);
@@ -430,6 +547,10 @@ eosio::salescon::agreestruct salescon::getAgreement()
   return (*agreeIt);
 }
 
+/**
+ * Getter
+ * returns { config }
+ */
 eosio::salescon::configstruct salescon::getConfig()
 {
   auto configIt = _config.find(0);
@@ -437,6 +558,9 @@ eosio::salescon::configstruct salescon::getConfig()
   return (*configIt);
 }
 
+/**
+ * Customized Dispatcher
+ */
 extern "C" void apply(uint64_t receiver, uint64_t code, uint64_t action)
 {
   if (code == name("eosio.token").value && action == name("transfer").value)

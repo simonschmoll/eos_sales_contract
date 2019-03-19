@@ -13,13 +13,15 @@
                 <v-chip dark color="success" v-if="deployed">Yes
                   <v-icon dark right>check_circle</v-icon>
                 </v-chip>
-                <v-chip dark color="error" v-else>No</v-chip>
+                <v-chip small dark color="error" v-else>No</v-chip>
               </div>
             </div>
           </v-card-title>
           <v-card-actions>
             <v-btn :loading="deployloader" :disabled="deployButtonDisabled"
-            block color="primary" @click="deployContract();loader='deployloader'">Deploy</v-btn>
+            block large color="primary" @click="deployContract();loader='deployloader'">Deploy
+            <v-icon color="info" x-large right>cloud_upload</v-icon>
+            </v-btn>
           </v-card-actions>
         </v-card>
         </v-flex>
@@ -41,7 +43,9 @@
 
           <v-card-actions>
             <v-btn :loading="initloader" :disabled="initloader"
-            block color="primary" @click="initialize();loader = 'initloader'">Initialize</v-btn>
+            block large color="primary" @click="initialize();loader = 'initloader'">Initialize
+            <v-icon color="info" x-large right>whatshot</v-icon>
+            </v-btn>
           </v-card-actions>
         </v-card>
         </v-flex>
@@ -60,8 +64,10 @@
           <v-card-actions>
             <v-btn
             :loading="connectloader" :disabled="connectloader"
-            block color="primary"
-            @click="connectToContract();loader = 'connectloader'">Connect</v-btn>
+            block large color="primary"
+            @click="connectToContract();loader = 'connectloader'">Connect
+            <v-icon color="info" x-large right>rss_feed</v-icon>
+            </v-btn>
           </v-card-actions>
         </v-card>
         </v-flex>

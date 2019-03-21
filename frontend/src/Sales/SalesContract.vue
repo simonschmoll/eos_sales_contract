@@ -204,7 +204,9 @@
                     <v-card-actions>
                       <v-btn
                         :loading="loadingSeller"
-                        :disabled="loadingSeller || Boolean(getItemSet)"
+                        :disabled="loadingSeller
+                        || Boolean(getItemSet)
+                        || Boolean(contract.contractClosed)"
                         large round color="primary"
                         @click="sendItem();loader = 'loadingSeller'">Set Item
                       <v-icon color="info" x-large right>add</v-icon>
@@ -233,7 +235,9 @@
                 <v-layout align-center justify-center row fill-height>
                   <v-card-actions>
                     <v-btn :loading="loadingSeller"
-                      :disabled="loadingSeller || Boolean(getAgreement.sellerRetract)"
+                      :disabled="loadingSeller
+                      || Boolean(getAgreement.sellerRetract)
+                      || Boolean(contract.contractClosed)"
                       large round color="primary"
                       @click="retractSeller();loader = 'loadingSeller'">Retract
                       <v-icon color="warning" x-large right>report</v-icon>
@@ -280,7 +284,9 @@
                 <v-layout align-center justify-center row fill-height>
                   <v-card-actions>
                     <v-btn :loading="loadingBuyer"
-                    :disabled="loadingBuyer || Boolean(getItem.itemReceived)"
+                    :disabled="loadingBuyer
+                    || Boolean(getItem.itemReceived)
+                    || Boolean(contract.contractClosed)"
                       round large color="primary"
                       @click="received();loader = 'loadingBuyer'">Received
                       <v-icon color="info" x-large dark right>mail</v-icon>
@@ -295,7 +301,9 @@
                   <v-card-actions>
                     <v-btn
                       :loading="loadingBuyer"
-                      :disabled="loadingBuyer || Boolean(getItem.itemPaid)"
+                      :disabled="loadingBuyer
+                      || Boolean(getItem.itemPaid)
+                      || Boolean(contract.contractClosed)"
                       large
                       round
                       color="primary"
@@ -312,7 +320,9 @@
                 <v-layout align-center justify-center row fill-height>
                   <v-card-actions>
                     <v-btn :loading="loadingBuyer"
-                      :disabled="loadingBuyer || Boolean(getAgreement.buyerRetract)"
+                      :disabled="loadingBuyer
+                      || Boolean(getAgreement.buyerRetract)
+                      || Boolean(contract.contractClosed)"
                       large round color="primary"
                       @click="retractBuyer();loader = 'loadingBuyer'">Retract
                       <v-icon color="warning" x-large right>report</v-icon>
@@ -327,7 +337,9 @@
                   <v-card-actions>
                     <v-btn
                       :loading="loadingBuyer"
-                      :disabled="loadingBuyer || (!Boolean(getBuyerIsPaidBack))"
+                      :disabled="loadingBuyer
+                      || (!Boolean(getBuyerIsPaidBack))
+                      || Boolean(contract.contractClosed)"
                       large
                       round
                       color="primary"
@@ -355,7 +367,9 @@
                 <v-layout align-center justify-center fill-height>
                   <v-card-actions>
                     <v-btn :loading="loadingIntermediator"
-                    :disabled="loadingIntermediator || Boolean(contract.retracted)"
+                    :disabled="loadingIntermediator
+                    || Boolean(contract.retracted)
+                    || Boolean(contract.contractClosed)"
                       large round color="primary"
                       @click="retractIntermed(false);loader = 'loadingIntermediator'">Retract
                       <v-icon color="warning" x-large right>report</v-icon>
@@ -369,7 +383,9 @@
                 <v-layout align-center justify-center fill-height>
                   <v-card-actions>
                     <v-btn :loading="loadingIntermediator"
-                    :disabled="loadingIntermediator || Boolean(contract.retracted)"
+                    :disabled="loadingIntermediator
+                    || Boolean(contract.retracted)
+                    || Boolean(contract.contractClosed)"
                       large round color="primary"
                       @click="retractIntermed(true);loader = 'loadingIntermediator'">Retract
                       <v-icon color="warning" x-large right>report</v-icon>
@@ -472,7 +488,9 @@ export default {
 
       this[l] = !this[l];
 
-      // setTimeout(() => (this[l] = false), 3000);
+      setTimeout(() => {
+        (this[l] = false);
+      }, 7000);
 
       this.loader = null;
     },

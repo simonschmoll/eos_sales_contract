@@ -128,9 +128,9 @@ export default {
 
       this[l] = !this[l];
 
-      // setTimeout(() => {
-      //   (this[l] = false);
-      // }, 7000);
+      setTimeout(() => {
+        (this[l] = false);
+      }, 7000);
 
       this.loader = null;
     },

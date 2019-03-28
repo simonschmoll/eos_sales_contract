@@ -103,7 +103,7 @@ void salescon::transfer(name from, name to, asset quantity, string memo)
   assertContractClosedStatus(false);
   assertItemSet();
   assertRetractStatus(false);
-  assertPriceEqualsValue(quantity.amount);
+  assertPaymentGreaterOrEqualToPrice(quantity.amount);
   eosio_assert(from == buyer, "Transfer must come from buyer");
   eosio_assert(to == _self, "Contract was not the recipient");
   eosio_assert(quantity.symbol.is_valid(), "Invalid quantity");
@@ -454,10 +454,10 @@ void salescon::assertItemPaid()
  * Modifier
  * Check if value of msg sender is equal to price of item
  */
-void salescon::assertPriceEqualsValue(uint64_t value)
+void salescon::assertPaymentGreaterOrEqualToPrice(uint64_t value)
 {
   auto iterator = _item.find(0);
-  eosio_assert((*iterator).itemPrice.amount == value, "assertPriceEqualsValue: Transfer value must be equal to price");
+  eosio_assert((*iterator).itemPrice.amount == value, "assertPaymentGreaterOrEqualToPrice: Transfer value must be equal to price");
 }
 
 /**

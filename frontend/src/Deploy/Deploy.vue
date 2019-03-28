@@ -4,7 +4,7 @@
     <v-container fluid grid-list-xl fill-height>
       <v-layout>
         <v-flex md4>
-          <v-card color="secondary" hover>
+          <v-card color="secondary">
           <v-card-title primary-title>
             <div>
               <h3 class="display-1 mb-3">Deploy</h3>
@@ -13,7 +13,9 @@
                 <v-chip dark color="success" v-if="deployed">Yes
                   <v-icon dark right>check_circle</v-icon>
                 </v-chip>
-                <v-chip small dark color="error" v-else>No</v-chip>
+                <v-chip small dark color="error" v-else>No
+                  <v-icon dark right>offline_bolt</v-icon>
+                </v-chip>
               </div>
             </div>
           </v-card-title>
@@ -26,7 +28,7 @@
         </v-card>
         </v-flex>
         <v-flex md4>
-          <v-card color="secondary" hover>
+          <v-card color="secondary">
           <v-card-title primary-title>
             <div>
               <h3 class="display-1 mb-3">Initialize</h3>
@@ -50,7 +52,7 @@
         </v-card>
         </v-flex>
         <v-flex md4>
-          <v-card color="secondary" hover>
+          <v-card color="secondary">
           <v-card-title primary-title>
             <div>
               <h3 class="display-1 mb-3">Connect to contract</h3>

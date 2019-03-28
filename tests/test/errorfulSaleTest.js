@@ -169,7 +169,7 @@ describe('Errorful sales functionality', () => {
     }
   }) 
 
-  it('Payment is not equal to the price', async () => {
+  it('Payment is smaller than the price', async () => {
     // Given
     try {
       await testService.setItem('seller');
@@ -188,7 +188,7 @@ describe('Errorful sales functionality', () => {
       await testService.send('eosio.token', 'transfer', 'buyer', 'active', wrongPriceData);
       assert.fail('token transfer should fail');
     } catch (error) {
-      assert.deepEqual('Error: assertion failure with message: assertPriceEqualsValue: Transfer value must be equal to price', error.toString());
+      assert.deepEqual('Error: assertion failure with message: assertPaymentGreaterOrEqualToPrice: Transfer value must be equal to price', error.toString());
     }
   }) 
 

@@ -44,7 +44,7 @@ export default {
         console.log(error);
         window.alert(`${error.toString()}`)
       } finally {
-        state.loadingFlag = false;
+        state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
     },
 

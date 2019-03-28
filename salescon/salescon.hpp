@@ -92,7 +92,7 @@ namespace eosio {
       void assertItemSet();
       void assertItemReceived();
       void assertItemPaid();
-      void assertPriceEqualsValue(uint64_t value);
+      void assertPaymentGreaterOrEqualToPrice(uint64_t value);
       void assertRetractStatus(bool status);
       void assertContractClosedStatus(bool status);
       void assertMarkedAsRetracted();

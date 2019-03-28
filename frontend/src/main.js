@@ -9,7 +9,7 @@ Vue.use(Vuetify, {
   theme: {
     primary: '#1565C0',
     secondary: '#90CAF9',
-    accent: '#0D47A1',
+    accent: '#BBDEFB',
     error: '#E53935',
     info: '#FFEE58',
     success: '#00C853',

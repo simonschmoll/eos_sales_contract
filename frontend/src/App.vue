@@ -1,19 +1,26 @@
 <template>
   <v-app style="background: #E3F2FD">
   <div id="app">
-     <v-toolbar color="blue darken-3">
+     <v-toolbar color="blue darken-3" dark fixed app>
       <span><h2>Sales Contract</h2></span>
-
+      <v-spacer></v-spacer>
+      <div class="subheading" v-if="contractInstance">
+        Contract Balance: {{getBalance}}
+      </div>
     </v-toolbar>
-    <main>
-       <router-view v-if="contractInstance" name="default"/>
-      <router-view v-else name="deploy"/>
-    </main>
+    <v-content>
+      <main>
+        <router-view v-if="contractInstance" name="default"/>
+        <router-view v-else name="deploy"/>
+      </main>
+    </v-content>
   </div>
   </v-app>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'app',
   data() {
@@ -32,7 +39,7 @@ export default {
     poll() {
       this.polling = setInterval(() => {
         this.$store.dispatch('pollContract');
-      }, 3000);
+      }, 2000);
     },
   },
   computed: {
@@ -40,6 +47,9 @@ export default {
       console.log('Returning contractInstance', this.$store.state.eosModule.contractName);
       return this.$store.state.eosModule.contractName;
     },
+    ...mapGetters({
+      getBalance: 'getBalance',
+    }),
   },
 };
 </script>

@@ -25,6 +25,18 @@
                         <v-icon dark right>offline_bolt</v-icon>
                       </v-chip>
                     </td>
+                  <tr>
+                    <td>Item Set?</td>
+                    <td>
+                      <v-chip small dark color="success" v-if="contract.itemSet">
+                        Yes
+                        <v-icon dark right>check_circle</v-icon>
+                      </v-chip>
+                      <v-chip small dark color="error" v-else>
+                        No
+                        <v-icon dark right>offline_bolt</v-icon>
+                      </v-chip>
+                    </td>
                   </tr>
                 </table>
               </div>
@@ -69,7 +81,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Paid Back?</td>
+                    <td>Payback?</td>
                     <td>
                       <v-chip small dark color="success" v-if="getBuyerIsPaidBack">
                         Yes

@@ -110,7 +110,10 @@ export default {
       const isDecimal = price.indexOf('.');
       const decimalLength = (price + '.').split('.')[1].length;
       if(isDecimal > -1 && (decimalLength > 4)) { 
-        window.alert('Price must not be smaller than 5 decimal places')
+        state.errorFlag = true;
+        state.loadingFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
+        // window.alert('Price must not be smaller than 5 decimal places')
         throw new Error('Price must not be smaller than 5 decimal places')
       } else if((isDecimal > -1 && (decimalLength <= 4))){
         let amountZeros = 4-decimalLength;

@@ -9,11 +9,21 @@
       </div>
     </v-toolbar>
     <v-content>
+      <v-alert
+      :value="errorFlag"
+      type="error"
+      transition="scale-transition"
+      >
+      {{errorMessage}}
+      </v-alert>
       <main>
         <router-view v-if="contractInstance" name="default"/>
         <router-view v-else name="deploy"/>
       </main>
     </v-content>
+    <v-footer app class="pa-3">
+      <div>&copy; {{ new Date().getFullYear() }}</div>
+    </v-footer>
   </div>
   </v-app>
 </template>
@@ -39,7 +49,7 @@ export default {
     poll() {
       this.polling = setInterval(() => {
         this.$store.dispatch('pollContract');
-      }, 2000);
+      }, 1000);
     },
   },
   computed: {
@@ -50,6 +60,19 @@ export default {
     ...mapGetters({
       getBalance: 'getBalance',
     }),
+    errorMessage() {
+      return this.$store.state.eosModule.errorMessage;
+    },
+    errorFlag() {
+      return this.$store.state.eosModule.errorFlag;
+    },
+  },
+  watch: {
+    errorFlag() {
+      setTimeout(() => {
+        this.$store.commit('changeErrorFlagAndMessage');
+      }, 4000);
+    },
   },
 };
 </script>

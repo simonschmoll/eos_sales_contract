@@ -3,6 +3,8 @@ import eosUtil from '../../util/eosUtil';
 /* eslint-disable */
 export default {
   state: {
+    errorFlag: false,
+    errorMessage: null,
     loadingFlag: false,
     deployedContract: null,
     contractName: null,
@@ -42,7 +44,9 @@ export default {
         dispatch('pollContract');
       } catch(error) {
         console.log(error);
-        window.alert(`${error.toString()}`)
+        // window.alert(`${error.toString()}`)
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
@@ -53,7 +57,8 @@ export default {
         await eosUtil.deploy()
         state.deployedContract = eosUtil.getContractName();
       } catch (error) {
-        window.alert(`${error.toString()}`)
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
@@ -67,7 +72,8 @@ export default {
         state.contractName = contractName;
         dispatch('pollContract')
       } catch (error) {
-        window.alert(`${error.toString()}`)
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
@@ -77,30 +83,27 @@ export default {
     async pollContract({ state, commit }) {
       if(state.contractName) {
         const data = await eosUtil.getContractData(state.contractName);
-        // console.log('Data is: ', data);
         commit('loadData', data);
-      }
-    },
-    
-    async changeSeller({ state }, newSellerAddress) {
-      try {
-        await eosUtil.changeSeller(newSellerAddress, state.contractName)
-      }catch(error) {
-        window.alert(`${error.toString()}`);
-      } finally {
-        state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
     },
 
     async loadData({ state, commit }) {
-      // state.contractName = 'salescon'
       if(state.contractName) {
         console.log('Loading InitialData');
         const data = await eosUtil.getContractData(state.contractName);
         commit('loadData', data);
       }
     },
-    async setItem({ state }, { name, price }) {
+    async setItem({ state, dispatch}, { name, price }) {
+      if(name = '' || !name) {
+        state.errorFlag = true;
+        state.errorMessage = 'Empty name is not allowed, please insert a name'
+        throw Error('Empty name is not allowed, please insert a name')
+      } else if (price === 0 || !price) {
+        state.errorFlag = true;
+        state.errorMessage = 'Price must not be empty or 0'
+        throw Error('Price must not be empty or 0')
+      }
       console.log('Set Item mutation called', price);
       console.log('Price index', (price.indexOf('.') > -1));
       console.log('decimal places', (price + '.').split('.')[1].length )
@@ -121,80 +124,106 @@ export default {
       console.log('The price is', price);  
       try {
         await eosUtil.setItem({ itemName: name, itemPrice: (price + ' EOS') }, state.contractName)
+        dispatch('pollContract')
       } catch(error) {
-        window.alert(`${error.toString()}`);
+        // window.alert(`${error.toString()}`);
+        console.log(error);
+        
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         console.log('state loading flag in store', state.loadingFlag)
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
     },
 
-    async pay({ state }, price) {
+    async pay({ state, dispatch }, price) {
       console.log('Pay in store called', price);
       try{
         await eosUtil.pay(price, state.contractName)
+        dispatch('pollContract')
       } catch(error) {
-        window.alert(`${error.toString()}`);
+        // window.alert(`${error.toString()}`);
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
     },
 
-    async receivedItem({ state }) {
+    async receivedItem({ state, dispatch }) {
       try {
         await eosUtil.itemReceived(state.contractName)
+        dispatch('pollContract')
       }
       catch(error) {
-        window.alert(`${error.toString()}`);
+        // window.alert(`${error.toString()}`);
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
     },
-    async retractBuyer({ state }) {
+    async retractBuyer({ state, dispatch }) {
       console.log('Mutation retractBuyer');
       try {
         await eosUtil.retractBuyer(state.contractState.buyer, state.contractName)
+        dispatch('pollContract')
       }catch(error) {
-        window.alert(`${error.toString()}`);
+        // window.alert(`${error.toString()}`);
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
     },
-    async retractSeller({ state }) {
+    async retractSeller({ state, dispatch }) {
       console.log('Mutation retractSeller');
       try{
         await eosUtil.retractSeller(state.contractState.seller, state.contractName)
+        dispatch('pollContract')
       }catch(error) {
-        window.alert(`${error.toString()}`);
+        // window.alert(`${error.toString()}`);
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
     },
-    async retractIntermed({ state }, buyerIsRight) {
+    async retractIntermed({ state, dispatch }, buyerIsRight) {
       console.log('Mutation retractIntermed');
       try{
         await eosUtil.retractIntermed(state.contractState.intermediator, buyerIsRight, state.contractName)
+        dispatch('pollContract')
       } catch(error) {
-        window.alert(`${error.toString()}`);
+        // window.alert(`${error.toString()}`);
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
     },
-    async withdraw({ state }) {
+    async withdraw({ state, dispatch }) {
       console.log('State is', state);
       try {
         await eosUtil.withdrawSeller(state.contractState.seller, state.contractName)
+        dispatch('pollContract')
       }catch(error) {
-        window.alert(`${error.toString()}`);
+        // window.alert(`${error.toString()}`);
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
     },
-    async withdrawAfterDisputeBuyer({ state }) {
+    async withdrawAfterDisputeBuyer({ state, dispatch }) {
       try {
         await eosUtil.withdrawBuyer(state.contractState.buyer, state.contractName)
+        dispatch('pollContract')
       }catch(error) {
-        window.alert(`${error.toString()}`);
+        // window.alert(`${error.toString()}`);
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
       } finally {
         state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
       }
@@ -220,6 +249,10 @@ export default {
     changeLoadingFlag(state) {
       console.log('state loading flag change mutation')
       state.loadingFlag = false;
+    },
+    changeErrorFlagAndMessage(state) {
+      state.errorFlag = false;
+      state.errorMessage = null;
     }
   },
 };

@@ -11,9 +11,10 @@ Vue.use(Vuetify, {
     secondary: '#90CAF9',
     accent: '#BBDEFB',
     error: '#E53935',
-    info: '#FFEE58',
+    info: '#FFFF00',
     success: '#00C853',
     warning: '#FF6D00',
+    secondAccent: '#7E57C2',
   },
 });
 

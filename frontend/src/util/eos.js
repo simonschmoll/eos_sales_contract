@@ -26,7 +26,7 @@ const network = {
 
 const initBuyerWallet = async () => {
   const accessContextBuyer = initAccessContext({
-    appName: 'Buyer',
+    appName: 'Sales Contract - Buyer',
     network,
     walletProviders: walletProvidersConf,
   });
@@ -41,7 +41,7 @@ const initBuyerWallet = async () => {
 
 const initIntermedWallet = async () => {
   const accessContextIntermed = initAccessContext({
-    appName: 'Intermed',
+    appName: 'Sales Contract - Intermed',
     network,
     walletProviders: walletProvidersConf,
   });
@@ -55,7 +55,7 @@ const initIntermedWallet = async () => {
 
 const initSellerWallet = async () => {
   const accessContextSeller = initAccessContext({
-    appName: 'Seller',
+    appName: 'Sales Contract - Seller',
     network,
     walletProviders: walletProvidersConf,
   });
@@ -68,7 +68,7 @@ const initSellerWallet = async () => {
 
 const initDeployWallet = async () => {
   const accessContextDeploy = initAccessContext({
-    appName: 'Deploy',
+    appName: 'Sales Contract - Deploy',
     network,
     walletProviders: walletProvidersConf,
   });

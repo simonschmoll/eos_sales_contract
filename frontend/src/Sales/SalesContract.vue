@@ -25,6 +25,7 @@
                         <v-icon dark right>offline_bolt</v-icon>
                       </v-chip>
                     </td>
+                  </tr>
                   <tr>
                     <td>Item Set?</td>
                     <td>
@@ -203,15 +204,18 @@
               <v-layout align-center justify-center>
                 <v-flex shrink>
                   <v-btn
-                  :loading="loadingSellerSetItem"
-                  :disabled="loadingSellerSetItem
+                    :loading="loadingSellerSetItem"
+                    :disabled="loadingSellerSetItem
                   || Boolean(getItemSet)
                   || Boolean(contract.contractClosed)
                   || Boolean(getAgreement.intermediatorRetract)"
-                  class="cardbutton v-btn--content-left" block large color="primary" @click.stop="dialog=true"
+                    class="cardbutton v-btn--content-left"
+                    block
+                    large
+                    color="primary"
+                    @click.stop="dialog=true"
                   >
-                    <v-icon color="info" x-large left>add</v-icon>
-                    Set Item...
+                    <v-icon color="info" x-large left>add</v-icon>Set Item...
                   </v-btn>
                   <v-btn
                     :loading="loadingSellerWithdraw"
@@ -223,8 +227,7 @@
                     color="primary"
                     @click="withdraw();loader = 'loadingSellerWithdraw'"
                   >
-                    <v-icon color="info" x-large left>attach_money</v-icon>
-                    Withdraw
+                    <v-icon color="info" x-large left>attach_money</v-icon>Withdraw
                   </v-btn>
                   <v-btn
                     class="cardbutton v-btn--content-left"
@@ -238,31 +241,31 @@
                     color="primary"
                     @click="retractSeller();loader = 'loadingSellerRetract'"
                   >
-                    <v-icon color="warning" x-large left>report</v-icon>
-                    Retract
+                    <v-icon color="warning" x-large left>report</v-icon>Retract
                   </v-btn>
-                  </v-flex>
+                </v-flex>
               </v-layout>
               <v-dialog v-model="dialog" width="500">
-                    <v-card color="white" hover>
-                          <v-card-title primary-title>
-                            <div>
-                              <v-text-field label="Name" v-model="itemName" name="itemName"></v-text-field>
-                              <v-text-field label="Price" v-model="itemPrice" name="itemPrice"></v-text-field>
-                            </div>
-                          </v-card-title>
-                           <v-divider></v-divider>
-                          <v-card-actions>
-                            <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
-                            <v-btn
-                              color="blue darken-1"
-                              flat
-                              @click="dialog = false;
+                <v-card color="white" hover>
+                  <v-card-title primary-title>
+                    <div>
+                      <v-text-field label="Name" v-model="itemName" name="itemName"></v-text-field>
+                      <v-text-field label="Price"
+                        v-model="itemPrice" name="itemPrice"></v-text-field>
+                    </div>
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-card-actions>
+                    <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
+                    <v-btn
+                      color="blue darken-1"
+                      flat
+                      @click="dialog = false;
                                 sendItem();loader = 'loadingSeller'"
-                            >Set Item</v-btn>
-                          </v-card-actions>
-                    </v-card>
-                  </v-dialog>
+                    >Set Item</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -275,21 +278,6 @@
               <v-card-text>
                 <v-layout align-center justify-center>
                   <v-flex shrink>
-                    <v-btn
-                      :loading="loadingBuyerReceived"
-                      class="cardbutton v-btn--content-left"
-                      :disabled="loadingBuyerReceived
-                    || Boolean(getItem.itemReceived)
-                    || Boolean(contract.contractClosed)
-                    || Boolean(getAgreement.intermediatorRetract)"
-                      block
-                      large
-                      color="primary"
-                      @click="received();loader = 'loadingBuyerReceived'"
-                    >
-                      <v-icon color="info" x-large dark left>mail</v-icon>
-                      Received
-                    </v-btn>
                     <v-btn
                       :loading="loadingBuyerPay"
                       class="cardbutton v-btn--content-left"
@@ -306,6 +294,20 @@
                       Pay {{getItem.price}}
                     </v-btn>
                     <v-btn
+                      :loading="loadingBuyerReceived"
+                      class="cardbutton v-btn--content-left"
+                      :disabled="loadingBuyerReceived
+                    || Boolean(getItem.itemReceived)
+                    || Boolean(contract.contractClosed)
+                    || Boolean(getAgreement.intermediatorRetract)"
+                      block
+                      large
+                      color="primary"
+                      @click="received();loader = 'loadingBuyerReceived'"
+                    >
+                      <v-icon color="info" x-large dark left>mail</v-icon>Received
+                    </v-btn>
+                    <v-btn
                       :loading="loadingBuyerRetract"
                       class="cardbutton v-btn--content-left"
                       :disabled="loadingBuyerRetract
@@ -317,8 +319,7 @@
                       color="primary"
                       @click="retractBuyer();loader = 'loadingBuyerRetract'"
                     >
-                      <v-icon color="warning" x-large left>report</v-icon>
-                      Retract
+                      <v-icon color="warning" x-large left>report</v-icon>Retract
                     </v-btn>
                     <v-btn
                       :loading="loadingBuyerWithdraw"
@@ -331,8 +332,7 @@
                       color="primary"
                       @click="withdrawAfterDisputeBuyer();loader = 'loadingBuyerWithdraw'"
                     >
-                      <v-icon color="info" x-large left>attach_money</v-icon>
-                      Withdraw
+                      <v-icon color="info" x-large left>attach_money</v-icon>Withdraw
                     </v-btn>
                   </v-flex>
                 </v-layout>
@@ -346,41 +346,39 @@
               <v-toolbar color="primary" dark dense flat card>
                 <v-toolbar-title class="subheading">Actions Intermediator</v-toolbar-title>
               </v-toolbar>
-                    <v-card-text>
-                      <v-layout align-center justify-center>
-                      <v-flex shrink>
-                      <v-btn
-                        class="cardbutton v-btn--content-left"
-                        :loading="loadingIntermediatorSellerRetract"
-                        :disabled="loadingIntermediatorSellerRetract
+              <v-card-text>
+                <v-layout align-center justify-center>
+                  <v-flex shrink>
+                    <v-btn
+                      class="cardbutton v-btn--content-left"
+                      :loading="loadingIntermediatorSellerRetract"
+                      :disabled="loadingIntermediatorSellerRetract
                     || Boolean(contract.retracted)
                     || Boolean(contract.contractClosed)"
-                        large
-                        block
-                        color="primary"
-                        @click="retractIntermed(false);loader = 'loadingIntermediatorSellerRetract'"
-                      >
-                        <v-icon color="warning" x-large left>report</v-icon>
-                        Retract favoring Seller
-                      </v-btn>
-                      <v-btn
-                        class="cardbutton v-btn--content-left"
-                        :loading="loadingIntermediatorBuyerRetract"
-                        :disabled="loadingIntermediatorBuyerRetract
+                      large
+                      block
+                      color="primary"
+                      @click="retractIntermed(false);loader = 'loadingIntermediatorSellerRetract'"
+                    >
+                      <v-icon color="warning" x-large left>report</v-icon>Retract favoring Seller
+                    </v-btn>
+                    <v-btn
+                      class="cardbutton v-btn--content-left"
+                      :loading="loadingIntermediatorBuyerRetract"
+                      :disabled="loadingIntermediatorBuyerRetract
                     || Boolean(contract.retracted)
                     || Boolean(contract.contractClosed)"
-                        large
-                        block
-                        color="primary"
-                        @click="retractIntermed(true);loader = 'loadingIntermediatorBuyerRetract'"
-                      >
-                        <v-icon color="warning" x-large left>report</v-icon>
-                        Retract favoring Buyer
-                      </v-btn>
-                      </v-flex>
-                    </v-layout>
-                    </v-card-text>
-                </v-card>
+                      large
+                      block
+                      color="primary"
+                      @click="retractIntermed(true);loader = 'loadingIntermediatorBuyerRetract'"
+                    >
+                      <v-icon color="warning" x-large left>report</v-icon>Retract favoring Buyer
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
           </div>
         </v-flex>
       </v-layout>
@@ -565,5 +563,4 @@ h1 {
 .v-btn--content-left .v-btn__content {
   justify-content: flex-start;
 }
-
 </style>

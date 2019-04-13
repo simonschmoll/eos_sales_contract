@@ -57,7 +57,6 @@ void salescon::setitem(std::string itemName, asset itemPrice)
   eosio_assert(itemPrice.symbol.is_valid(), "Invalid quantity");
   eosio_assert(itemPrice.amount > 0, "Only positive quantities can be transferred");
   eosio_assert(itemPrice.symbol == EOS_SYMBOL, "Asset must be of type EOS and with exact 4 decimal places");
-  // This is necessary to ensure that the amount is in the right decimal places 
 
   auto iterator = _item.find(0);
   eosio_assert(iterator == _item.end(), "Item already set");
@@ -191,23 +190,23 @@ void salescon::finalretract(bool buyerIsRight)
   configureRetractedState(buyerIsRight);
 }
 
-/**
- * changeseller
- * @params { name newSeller }
- * @conditions only by seller, contractRetracted == false, contract is initialized
- * @actions seller wants to change the seller account of the contract
- * @eos action
- */
-void salescon::changeseller(name newSeller) {
-  assertRetractStatus(false);
-  name seller = getSeller();
-  require_auth(seller);
-  auto configIt = _config.find(0);
-  eosio_assert(configIt != _config.end(), "changeseller: Contract must be initialized");
-  _config.modify(configIt, seller, [&](auto &row) {
-     row.seller = newSeller;
-  });
-}
+// /**
+//  * changeseller
+//  * @params { name newSeller }
+//  * @conditions only by seller, contractRetracted == false, contract is initialized
+//  * @actions seller wants to change the seller account of the contract
+//  * @eos action
+//  */
+// void salescon::changeseller(name newSeller) {
+//   assertRetractStatus(false);
+//   name seller = getSeller();
+//   require_auth(seller);
+//   auto configIt = _config.find(0);
+//   eosio_assert(configIt != _config.end(), "changeseller: Contract must be initialized");
+//   _config.modify(configIt, seller, [&](auto &row) {
+//      row.seller = newSeller;
+//   });
+// }
 
 /**
  * Setter

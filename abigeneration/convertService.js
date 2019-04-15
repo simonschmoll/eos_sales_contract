@@ -1,3 +1,5 @@
+// Based on https://cmichel.io/setcode-and-setabi-with-eos-js/
+
 const { Api, JsonRpc } = require('eosjs');
 const JsSignatureProvider = require('eosjs/dist/eosjs-jssig').default;  // development only
 const fetch = require('node-fetch');                            // node only; not needed in browsers

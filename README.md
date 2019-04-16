@@ -82,6 +82,13 @@ a pop up of Scatter will prompt you to allow this action. In the first interacti
 - Received Item (buyer account)
 - Withdraw (seller account)
 
+Remark:  
+**If you want to change the seller in this setup, you need to
+remove the application from Scatter - more specifically the
+connection with the name 'Sales Contract - Seller'. Otherwise
+Scatter tries to sign future seller request with the old
+seller account!**
+
 
 
 

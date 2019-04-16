@@ -224,7 +224,17 @@ export default {
         await eosUtil.withdrawBuyer(state.contractState.buyer, state.contractName)
         dispatch('pollContract')
       }catch(error) {
-        // window.alert(`${error.toString()}`);
+        state.errorFlag = true;
+        state.errorMessage = error.message ? error.message : error.toString()
+      } finally {
+        state.loadingFlag = Object.assign({}, state.loadingFlag, state.loadingFlag = true);
+      }
+    },
+    async changeSeller({ state, dispatch }, newSellerAddress) {
+      try {
+        await eosUtil.changeSeller(newSellerAddress, state.contractName)
+        dispatch('pollContract')
+      }catch(error) {
         state.errorFlag = true;
         state.errorMessage = error.message ? error.message : error.toString()
       } finally {

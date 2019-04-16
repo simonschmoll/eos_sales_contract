@@ -95,7 +95,7 @@ export default {
       }
     },
     async setItem({ state, dispatch}, { name, price }) {
-      if(name = '' || !name) {
+      if(name === '' || !name) {
         state.errorFlag = true;
         state.errorMessage = 'Empty name is not allowed, please insert a name'
         throw Error('Empty name is not allowed, please insert a name')

@@ -190,23 +190,23 @@ void salescon::finalretract(bool buyerIsRight)
   configureRetractedState(buyerIsRight);
 }
 
-// /**
-//  * changeseller
-//  * @params { name newSeller }
-//  * @conditions only by seller, contractRetracted == false, contract is initialized
-//  * @actions seller wants to change the seller account of the contract
-//  * @eos action
-//  */
-// void salescon::changeseller(name newSeller) {
-//   assertRetractStatus(false);
-//   name seller = getSeller();
-//   require_auth(seller);
-//   auto configIt = _config.find(0);
-//   eosio_assert(configIt != _config.end(), "changeseller: Contract must be initialized");
-//   _config.modify(configIt, seller, [&](auto &row) {
-//      row.seller = newSeller;
-//   });
-// }
+/**
+ * changeseller
+ * @params { name newSeller }
+ * @conditions only by seller, contractRetracted == false, contract is initialized
+ * @actions seller wants to change the seller account of the contract
+ * @eos action
+ */
+void salescon::changeseller(name newSeller) {
+  assertRetractStatus(false);
+  name seller = getSeller();
+  require_auth(seller);
+  auto configIt = _config.find(0);
+  eosio_assert(configIt != _config.end(), "changeseller: Contract must be initialized");
+  _config.modify(configIt, seller, [&](auto &row) {
+     row.seller = newSeller;
+  });
+}
 
 /**
  * Setter
@@ -406,7 +406,6 @@ void salescon::sendTokens(name to, asset price)
       "transfer"_n,
       std::make_tuple(get_self(), to, price, std::string("")))
       .send();
-  setBalance(asset(0, EOS_SYMBOL), to);
 }
 
 /**

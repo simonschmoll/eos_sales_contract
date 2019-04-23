@@ -14,9 +14,9 @@
                     <td>{{contract.seller}}</td>
                   </tr>
                   <tr>
-                    <td>Retracted?</td>
+                    <td>Item Set?</td>
                     <td>
-                      <v-chip small dark color="success" v-if="getAgreement.sellerRetract">
+                      <v-chip small dark color="success" v-if="contract.itemSet">
                         Yes
                         <v-icon dark right>check_circle</v-icon>
                       </v-chip>
@@ -27,9 +27,9 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Item Set?</td>
+                    <td>Retracted?</td>
                     <td>
-                      <v-chip small dark color="success" v-if="contract.itemSet">
+                      <v-chip small dark color="success" v-if="getAgreement.sellerRetract">
                         Yes
                         <v-icon dark right>check_circle</v-icon>
                       </v-chip>
@@ -161,9 +161,9 @@
                     <td>{{getItem.price}}</td>
                   </tr>
                   <tr>
-                    <td>Retracted?</td>
+                    <td>Closed?</td>
                     <td>
-                      <v-chip small dark color="success" v-if="contract.retracted">
+                      <v-chip small dark color="success" v-if="contract.contractClosed">
                         Yes
                         <v-icon dark right>check_circle</v-icon>
                       </v-chip>
@@ -174,9 +174,9 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Closed?</td>
+                    <td>Retracted?</td>
                     <td>
-                      <v-chip small dark color="success" v-if="contract.contractClosed">
+                      <v-chip small dark color="success" v-if="contract.retracted">
                         Yes
                         <v-icon dark right>check_circle</v-icon>
                       </v-chip>

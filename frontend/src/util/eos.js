@@ -1,13 +1,6 @@
 import { initAccessContext } from 'eos-transit';
 import scatter from 'eos-transit-scatter-provider';
 
-// We need to initialize the so called "access context" first,
-// passing it our dapp name, network configuration and
-// providers we want to make available to the dapp.
-// The context is responsible for initializing wallet connectoins
-// and tracking state of connected wallets.
-
-// We're using our own test network as an example here.
 let sellerWallet;
 let buyerWallet;
 let intermedWallet;
@@ -21,8 +14,6 @@ const network = {
   protocol: 'http',
   chainId: 'cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f',
 };
-// When user selects the wallet provider, we initiate the `Wallet` with it:
-// const wallet = accessContext.initWallet(selectedProvider);
 
 const initBuyerWallet = async () => {
   const accessContextBuyer = initAccessContext({

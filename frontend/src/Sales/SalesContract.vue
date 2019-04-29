@@ -153,11 +153,11 @@
                     <td>{{getContractName}}</td>
                   </tr>
                   <tr>
-                    <td>Item Name</td>
+                    <td>Item Name:</td>
                     <td>{{getItem.name}}</td>
                   </tr>
                   <tr>
-                    <td>Item Price</td>
+                    <td>Item Price:</td>
                     <td>{{getItem.price}}</td>
                   </tr>
                   <tr>

@@ -67,7 +67,7 @@ async function deploy() {
             account,
             vmtype: 0,
             vmversion: 0,
-            code: wasm.wasm.toString(),
+            code: wasm.toString(),
           },
         },
         {
@@ -81,7 +81,7 @@ async function deploy() {
           ],
           data: {
             account,
-            abi: abi.abi.toString(),
+            abi: abi.toString(),
           },
         },
       ],

@@ -75,6 +75,8 @@ To interact with the smart contract on the EOS Blockchain download the wallet pr
 
 Now open http://localhost:8082 and you can interact with the contract.
 
+![](scatterInstruction.gif)
+
 ### Intended steps for interaction: 
 Note: Every time you press a button while interacting with the contract, 
 a pop up of Scatter will prompt you to allow this action. In the first interaction with the contract you need to choose the accounts for interaction. Make sure to select the correct account for the specific role in the contract. E.g. for Deploy choose salescon, for setItem choose seller, etc.  

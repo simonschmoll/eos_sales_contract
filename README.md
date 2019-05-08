@@ -28,7 +28,7 @@ It is recommended to use a node version manager such as nvm  (https://github.com
 ### 3. Keosd, cleos and nodeos
 Please follow step 1.2 of the developer tutorial of EOS and install eosio, keosd, cleos and nodeos. Link: https://developers.eos.io/eosio-home/docs/setting-up-your-environment  
 Versions:  
-- cleos: client Build version: d4ffb4eb
+- cleos: v1.5.1
 - nodeos: v1.5.1
 - keosd: v1.5.1  
 Versions that differ from the aforementioned, can cause problems in the workflow. As there might be some breaking changes.  

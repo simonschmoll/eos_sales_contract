@@ -37,7 +37,6 @@ exports.send = async (account, actionName, actor, permission, data, nonce = 'asd
     blocksBehind: 0,
     expireSeconds: 0.5,
   });
-  // console.dir(result);
 };
 
 function getTransferData (from, contractName, memo, quantity = '10.0000 EOS') {

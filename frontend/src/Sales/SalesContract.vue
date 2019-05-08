@@ -600,4 +600,5 @@ h1 {
 .v-btn--content-left .v-btn__content {
   justify-content: flex-start;
 }
+
 </style>

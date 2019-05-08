@@ -41,7 +41,7 @@ Versions that differ from the aforementioned, can cause problems in the workflow
 From the root directory (eos_sales_contract) open a terminal and run: 
 `npm install` 
 The complete script should run without problems (no error messages), otherwise there will be problems later on! (yellow output is normal, as this just gives you the hint that the transactions are only executed locally)
-(**Remark: This command will install all dependencies and it will run a setup script which makes other scripts executable, these necessary for the tests, furthermore it will create a default wallet. The password for the default wallet will be stored in scripts/pw.txt you only need it if you want to unlock it manually)** 
+(**Remark: This command will install all dependencies and it will run a setup script which makes other scripts executable, this is necessary for the tests. Furthermore it will create a default wallet. The password for the default wallet will be stored in scripts/pw.txt you only need it if you want to unlock it manually)** 
 ## Start the Tests
 **Only after all previous steps (prerequisites 1-5 and npm install)**  
 From the root directory (eos_sales_contract) run:  

@@ -5,6 +5,8 @@ import store from './store';
 import router from './router';
 import 'vuetify/dist/vuetify.min.css';
 
+// Frontend Code is based on the vuejs fundamental course from pluralsight, code: https://github.com/jmcooper/vuejs-fundamentals
+
 Vue.use(Vuetify, {
   theme: {
     primary: '#1565C0',

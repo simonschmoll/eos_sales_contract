@@ -33,7 +33,6 @@ export default {
     web3Instance: null,
   },
   actions: {
-    
     async connectToContract({ state, dispatch }, contractAddr) {
       console.log('ContractAddr in connectToContract store:', contractAddr);
       
@@ -44,7 +43,6 @@ export default {
         dispatch('pollContract');
       } catch(error) {
         console.log(error);
-        // window.alert(`${error.toString()}`)
         state.errorFlag = true;
         state.errorMessage = error.message ? error.message : error.toString()
       } finally {
@@ -113,7 +111,6 @@ export default {
         state.errorFlag = true;
         state.loadingFlag = true;
         state.errorMessage = error.message ? error.message : error.toString()
-        // window.alert('Price must not be smaller than 5 decimal places')
         throw new Error('Price must not be smaller than 5 decimal places')
       } else if((isDecimal > -1 && (decimalLength <= 4))){
         let amountZeros = 4-decimalLength;
@@ -129,7 +126,6 @@ export default {
         await eosUtil.setItem({ itemName: name, itemPrice: (price + ' EOS') }, state.contractName)
         dispatch('pollContract')
       } catch(error) {
-        // window.alert(`${error.toString()}`);
         console.log(error);
         
         state.errorFlag = true;
@@ -146,7 +142,6 @@ export default {
         await eosUtil.pay(price, state.contractName)
         dispatch('pollContract')
       } catch(error) {
-        // window.alert(`${error.toString()}`);
         state.errorFlag = true;
         state.errorMessage = error.message ? error.message : error.toString()
       } finally {
@@ -160,7 +155,6 @@ export default {
         dispatch('pollContract')
       }
       catch(error) {
-        // window.alert(`${error.toString()}`);
         state.errorFlag = true;
         state.errorMessage = error.message ? error.message : error.toString()
       } finally {
@@ -173,7 +167,6 @@ export default {
         await eosUtil.retractBuyer(state.contractState.buyer, state.contractName)
         dispatch('pollContract')
       }catch(error) {
-        // window.alert(`${error.toString()}`);
         state.errorFlag = true;
         state.errorMessage = error.message ? error.message : error.toString()
       } finally {
@@ -186,7 +179,6 @@ export default {
         await eosUtil.retractSeller(state.contractState.seller, state.contractName)
         dispatch('pollContract')
       }catch(error) {
-        // window.alert(`${error.toString()}`);
         state.errorFlag = true;
         state.errorMessage = error.message ? error.message : error.toString()
       } finally {
@@ -199,7 +191,6 @@ export default {
         await eosUtil.retractIntermed(state.contractState.intermediator, buyerIsRight, state.contractName)
         dispatch('pollContract')
       } catch(error) {
-        // window.alert(`${error.toString()}`);
         state.errorFlag = true;
         state.errorMessage = error.message ? error.message : error.toString()
       } finally {
@@ -212,7 +203,6 @@ export default {
         await eosUtil.withdrawSeller(state.contractState.seller, state.contractName)
         dispatch('pollContract')
       }catch(error) {
-        // window.alert(`${error.toString()}`);
         state.errorFlag = true;
         state.errorMessage = error.message ? error.message : error.toString()
       } finally {

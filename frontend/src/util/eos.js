@@ -130,7 +130,6 @@ const getDeployWallet = async () => {
   return deployWallet;
 };
 
-
 export default {
   getSellerWallet,
   getIntermedWallet,

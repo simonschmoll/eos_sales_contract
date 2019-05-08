@@ -3,7 +3,6 @@ import rpcModule from './rpcModule';
 import wasm from './wasm';
 import abi from './abi';
 
-
 let deployName;
 
 async function send(account, actionName, data, wallet) {
@@ -168,7 +167,6 @@ const getContractData = async (contractName) => {
   const agreement = getRowsSaleCon('agreement', contractName);
   const item = getRowsSaleCon('item', contractName);
   return Promise.all([config, agreement, item]).then((value) => {
-    // console.log(value);
     let name;
     let price;
     if (value[2].rows.length < 1) {

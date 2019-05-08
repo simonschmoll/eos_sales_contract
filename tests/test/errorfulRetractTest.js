@@ -1,9 +1,6 @@
 const testService = require('../services/testService');
 const { assert } = require('chai');
 
-
-// before(() => testService.before());
-
 beforeEach(() =>  testService.beforeEach());
 
 /***********************************************************************************

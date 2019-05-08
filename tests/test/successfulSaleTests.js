@@ -1,7 +1,6 @@
 const testService = require('../services/testService');
 const { assert } = require('chai');
 
-// TODO: uncomment next line (1) for testing single files
 before(() => testService.before()); 
 
 beforeEach(() =>  testService.beforeEach());

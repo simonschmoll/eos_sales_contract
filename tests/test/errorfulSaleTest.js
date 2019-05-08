@@ -2,7 +2,6 @@ const testService = require('../services/testService');
 const { assert } = require('chai');
 
 beforeEach(() =>  testService.beforeEach());
-// before(() => testService.before());
 
 /***********************************************************************************
  sales functionality

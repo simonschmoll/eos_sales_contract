@@ -1,9 +1,6 @@
 const testService = require('../services/testService');
 const { assert } = require('chai');
 
-
-// before(() => testService.before());
-
 beforeEach(() =>  testService.beforeEach());
 
 /***********************************************************************************
@@ -28,7 +25,6 @@ describe('Errorful changing seller tests', () => {
     })
   
     it('Contract is retracted, seller tries to disown', async () => {
-      // console.log('Current contractname', contractName);
       // Given
       try {
         await testService.setItem('seller');

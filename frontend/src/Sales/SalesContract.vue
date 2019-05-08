@@ -468,47 +468,37 @@ export default {
       // this.loader = this.loadingSeller;
       const name = this.itemName;
       const price = this.itemPrice;
-      console.log('Item price in sendItem:', price);
       this.$store.dispatch('setItem', { name, price });
     },
     received() {
-      console.log('received called from component');
       this.$store.dispatch('receivedItem');
     },
     pay(price) {
-      console.log('User wants to pay item (SalesContract)', price);
       this.$store.dispatch('pay', price);
     },
     withdraw() {
-      console.log('Seller wants to withdraw money');
       this.$store.dispatch('withdraw');
     },
     withdrawAfterDisputeBuyer() {
-      console.log('Buyer wants to withdraw money after dispute');
       this.$store.dispatch('withdrawAfterDisputeBuyer');
     },
     retractBuyer() {
-      console.log('Buyer wants to retract (SalesContract)');
       this.$store.dispatch('retractBuyer');
     },
     retractIntermed(buyerIsRight) {
-      console.log('Intermed wants to retract (SalesContract)');
       this.$store.dispatch('retractIntermed', buyerIsRight);
     },
     retractSeller() {
-      console.log('Seller wants to retract (SalesContract)');
       this.$store.dispatch('retractSeller');
     },
     changeSeller() {
       const newSellerAddress = this.newSeller;
-      console.log('User wants to change seller', newSellerAddress);
       this.$store.dispatch('changeSeller', newSellerAddress);
     },
   },
   watch: {
     loader() {
       const l = this.loader;
-      console.log('Load called');
 
       this[l] = !this[l];
 
@@ -519,7 +509,6 @@ export default {
       this.loader = null;
     },
     loadingFlag() {
-      console.log('loading flag is', this.loadingFlag);
       if (this.loadingFlag) {
         this.loadingSellerSetItem = false;
         this.loadingSellerRetract = false;

@@ -95,7 +95,6 @@ export default {
   },
   methods: {
     deployContract() {
-      console.log('Deploy called');
       this.$store.dispatch('deploy');
     },
 
@@ -104,7 +103,6 @@ export default {
       this.$store.dispatch('connectToContract', contractAddr);
     },
     initialize() {
-      console.log('init called');
       const buyer = this.addrBuyer;
       const intermediator = this.addrIntermediator;
       const seller = this.addrSeller;
@@ -113,7 +111,6 @@ export default {
   },
   computed: {
     deployed() {
-      console.log('Deployed contract?', this.$store.state.eosModule.deployedContract);
       return this.$store.state.eosModule.deployedContract;
     },
     loadingFlag() {
@@ -126,7 +123,6 @@ export default {
   watch: {
     loader() {
       const l = this.loader;
-      console.log('Load called');
 
       this[l] = !this[l];
 

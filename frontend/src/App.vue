@@ -54,7 +54,6 @@ export default {
   },
   computed: {
     contractInstance() {
-      console.log('Returning contractInstance', this.$store.state.eosModule.contractName);
       return this.$store.state.eosModule.contractName;
     },
     ...mapGetters({

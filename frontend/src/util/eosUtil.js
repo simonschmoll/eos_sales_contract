@@ -6,10 +6,7 @@ import abi from './abi';
 let deployName;
 
 async function send(account, actionName, data, wallet) {
-  console.log('Wallet and account in Send: ', wallet, account);
   if (wallet.authenticated === false) {
-    console.log('Need to login again from Send function');
-
     await wallet.connect();
     await wallet.login();
   }
@@ -38,7 +35,6 @@ async function send(account, actionName, data, wallet) {
 
 
 async function init(data, contractName) {
-  console.log('init function util');
   const wallet = await eos.getSellerWallet();
   return send(contractName, 'init', data, wallet);
 }
@@ -47,8 +43,6 @@ async function deploy() {
   const wallet = await eos.getDeployWallet();
 
   deployName = wallet.auth.accountName;
-  console.log('wasm', wasm.wasm);
-  console.log('abi', abi.abi);
   const account = wallet.auth.accountName;
   return wallet.eosApi.transact(
     {
@@ -97,15 +91,12 @@ function getContractName() {
 }
 
 async function setItem(item, contractName = 'salescon') {
-  console.log('In Set Item', item);
   const wallet = await eos.getSellerWallet();
-  console.log('Wallet in setItem', wallet);
 
   return send(contractName, 'setitem', item, wallet);
 }
 
 async function pay(price, contractName) {
-  console.log('Pay called');
   const wallet = await eos.getBuyerWallet();
   const data = {
     from: wallet.auth.accountName,
@@ -141,15 +132,12 @@ const itemReceived = async (contractName) => {
 
 const withdrawBuyer = async (account, contractName) => {
   const wallet = await eos.getBuyerWallet();
-  console.log('Withdraw buyer wallet', wallet);
 
   return send(contractName, 'withdraw', { to: account.toString() }, wallet);
 };
 
 const withdrawSeller = async (account, contractName) => {
   const wallet = await eos.getSellerWallet();
-  console.log('Withdraw wallet', wallet);
-  console.log('Withdraw account', account, contractName);
 
   return send(contractName, 'withdraw', { to: account.toString() }, wallet);
 };

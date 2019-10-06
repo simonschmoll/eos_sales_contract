@@ -9,7 +9,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "env": "0.0.2",
     "eos-transit": "0.0.9",
     "eos-transit-scatter-provider": "0.0.10",
